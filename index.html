@@ -66,6 +66,7 @@ svg path#heart { transform-origin: 50% 50%; animation: blink 4s linear infinite;
     <img src="renata.jpg" alt="Renata">
     <h1>EU AMO VOCÊ</h1>
   </div>
+  <button class="btn-circle" id="nextScreen2Btn">→</button>
 </div>
 
 <!-- Tela 3: envelope -->
@@ -197,6 +198,10 @@ function mostrarTela(n){
 document.getElementById('startBtn').addEventListener('click',()=>{
   musica.play().catch(()=>{});
   mostrarTela(2);
+});
+
+document.gerElmentById('nextScreen2Btn').addEventListener('click',()=>{
+  mostrarTela(3);
 });
 
 document.getElementById('openBtn').addEventListener('click',()=>{mostrarTela(4); digitarTexto(document.getElementById('texto-carta'),TEXTO_PRINCIPAL);});
