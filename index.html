@@ -39,6 +39,10 @@ canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; poin
 .btn-circle:active { transform:scale(0.9);}
 .btn-circle.hidden { display:none;}
 
+/* envelope flap open */
+#env-flap.open { animation: abrirTampa 0.8s forwards; transform-origin: 50% 25%; }
+@keyframes abrirTampa { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(-180deg); } }
+
 svg path#line { fill: none; stroke: #e00000; stroke-width: 2; stroke-linecap:butt; stroke-linejoin:round; stroke-miterlimit:4; stroke-dasharray:1; stroke-dashoffset:1; animation: dash 4s linear infinite; }
 svg path#heart { transform-origin: 50% 50%; animation: blink 4s linear infinite; }
 
@@ -69,14 +73,12 @@ svg path#heart { transform-origin: 50% 50%; animation: blink 4s linear infinite;
   <button class="btn-circle" id="nextScreen2Btn">→</button>
 </div>
 
-<!-- Tela 3: envelope -->
+<!-- Tela 3: envelope animado -->
 <div id="screen3" class="screen">
   <div id="envelope-box">
     <svg viewBox="0 0 100 100">
-      <!-- corpo do envelope -->
-      <rect x="10" y="20" width="80" height="60" fill="#ff2b6a" stroke="#d4af37" stroke-width="3"/>
-      <!-- tampa do envelope -->
-      <polygon points="10,20 50,50 90,20" fill="#ff3366"/>
+      <rect id="env-body" x="10" y="25" width="80" height="50" fill="#ff2b6a" stroke="#d4af37" stroke-width="3" rx="5" ry="5"/>
+      <polygon id="env-flap" points="10,25 50,5 90,25" fill="#ff3366"/>
     </svg>
     <button id="openBtn">OPEN</button>
   </div>
@@ -193,8 +195,6 @@ function mostrarTela(n){
   document.getElementById(`screen${n}`).classList.add('active'); 
   stage=n;
   document.getElementById('startBtn')?.classList.toggle('hidden',n!==1);
-  document.getElementById('nextBtn')?.classList.toggle('hidden',n>=4);
-  if(n===3){setTimeout(()=>{document.getElementById('envelope-box').style.transform='translateY(0)';},100)}
 }
 
 document.getElementById('startBtn').addEventListener('click',()=>{
@@ -204,17 +204,29 @@ document.getElementById('startBtn').addEventListener('click',()=>{
 
 document.getElementById('nextScreen2Btn').addEventListener('click',()=>{
   mostrarTela(3);
+  document.getElementById('envelope-box').style.transform = 'translateY(0)';
 });
 
-document.getElementById('openBtn').addEventListener('click',()=>{mostrarTela(4); digitarTexto(document.getElementById('texto-carta'),TEXTO_PRINCIPAL);});
+document.getElementById('openBtn').addEventListener('click', ()=>{
+  document.getElementById('env-flap').classList.add('open');
+  setTimeout(()=>{
+    mostrarTela(4);
+    digitarTexto(document.getElementById('texto-carta'), TEXTO_PRINCIPAL);
+    document.getElementById('env-flap').classList.remove('open');
+    document.getElementById('envelope-box').style.transform='translateY(100vh)';
+  }, 800);
+});
 
 function digitarTexto(el,texto,vel=30){el.innerHTML=''; let i=0; function dig(){if(i<texto.length){el.innerHTML+=texto[i]; i++; setTimeout(dig,vel);}} dig();}
 
 document.getElementById('secretoBtn').addEventListener('click',()=>{document.getElementById('senha-screen').classList.add('active');});
 document.getElementById('confirmarSenha').addEventListener('click',()=>{
   const input=document.getElementById('senhaInput'); 
-  if(input.value===SENHA){document.getElementById('senha-screen').classList.remove('active'); mostrarTela(5); digitarTexto(document.getElementById('texto-secreto'),TEXTO_SECRETO);} 
-  else{alert('Senha errada!');}
+  if(input.value===SENHA){
+    document.getElementById('senha-screen').classList.remove('active'); 
+    mostrarTela(5); 
+    digitarTexto(document.getElementById('texto-secreto'),TEXTO_SECRETO);
+  } else{alert('Senha errada!');}
 });
 document.getElementById('cancelarSenha').addEventListener('click',()=>{document.getElementById('senha-screen').classList.remove('active');});
 document.getElementById('voltarBtn').addEventListener('click',()=>{mostrarTela(4);});
