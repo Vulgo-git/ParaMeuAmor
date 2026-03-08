@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Para você ❤️</title>
+
+<style>
+
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:radial-gradient(circle,#1a1a2e,#0f0f1a);
+font-family:Arial;
+overflow:hidden;
+color:white;
+}
+
+/* estrelas */
+
+.star{
+position:absolute;
+width:3px;
+height:3px;
+background:white;
+opacity:0.8;
+}
+
+/* corações */
+
+.heart{
+position:absolute;
+color:#ff4d6d;
+animation:float 6s linear infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0);opacity:1}
+100%{transform:translateY(-100vh);opacity:0}
+}
+
+/* coração inicial */
+
+#startHeart{
+font-size:120px;
+cursor:pointer;
+animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.2)}
+100%{transform:scale(1)}
+}
+
+/* nome */
+
+#name{
+display:none;
+font-size:60px;
+font-weight:bold;
+position:absolute;
+text-shadow:0 0 20px pink;
+animation:fade 2s;
+}
+
+@keyframes fade{
+from{opacity:0}
+to{opacity:1}
+}
+
+/* envelope */
+
+#envelope{
+display:none;
+width:220px;
+height:140px;
+background:#ff4d6d;
+position:relative;
+border-radius:8px;
+cursor:pointer;
+box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+#envelope:before{
+content:"";
+position:absolute;
+top:-70px;
+left:0;
+border-left:110px solid transparent;
+border-right:110px solid transparent;
+border-bottom:70px solid #ff4d6d;
+}
+
+/* carta */
+
+#letter{
+display:none;
+background:white;
+color:black;
+padding:40px;
+border-radius:10px;
+width:420px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,0,0,0.5);
+animation:appear 1.5s;
+}
+
+@keyframes appear{
+from{opacity:0;transform:scale(0.5)}
+to{opacity:1;transform:scale(1)}
+}
+
+#text{
+white-space:pre-line;
+font-size:18px;
+margin-top:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<audio id="music" src="musica.mp3"></audio>
+
+<div id="startHeart">❤️</div>
+
+<div id="name">Renata ❤️</div>
+
+<div id="envelope"></div>
+
+<div id="letter">
+<h2>Para você ❤️</h2>
+<p id="text"></p>
+</div>
+
+<script>
+
+/* estrelas */
+
+for(let i=0;i<80;i++){
+
+const star=document.createElement("div")
+
+star.className="star"
+
+star.style.left=Math.random()*100+"vw"
+star.style.top=Math.random()*100+"vh"
+
+document.body.appendChild(star)
+
+}
+
+/* corações */
+
+function createHeart(){
+
+const heart=document.createElement("div")
+
+heart.className="heart"
+
+heart.innerHTML="❤️"
+
+heart.style.left=Math.random()*100+"vw"
+heart.style.fontSize=(Math.random()*20+15)+"px"
+
+document.body.appendChild(heart)
+
+setTimeout(()=>heart.remove(),6000)
+
+}
+
+setInterval(createHeart,400)
+
+/* elementos */
+
+const startHeart=document.getElementById("startHeart")
+const envelope=document.getElementById("envelope")
+const letter=document.getElementById("letter")
+const text=document.getElementById("text")
+const name=document.getElementById("name")
+const music=document.getElementById("music")
+
+/* clique coração */
+
+startHeart.onclick=()=>{
+
+music.play()
+
+startHeart.style.display="none"
+
+name.style.display="block"
+
+setTimeout(()=>{
+
+name.style.display="none"
+envelope.style.display="block"
+
+},3000)
+
+}
+
+/* abrir envelope */
+
+envelope.onclick=()=>{
+
+envelope.style.display="none"
+letter.style.display="block"
+
+typeText()
+
+}
+
+/* carta */
+
+const message=`Meu amor,
+
+Eu fiz isso só para você.
+
+Talvez seja algo simples,
+mas foi feito pensando em você em cada detalhe.
+
+Desde que você entrou na minha vida,
+tudo ficou mais bonito
+
+Renata, eu te amo muito ❤️`
+
+let i=0
+
+function typeText(){
+
+if(i<message.length){
+
+text.innerHTML+=message.charAt(i)
+
+i++
+
+setTimeout(typeText,40)
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

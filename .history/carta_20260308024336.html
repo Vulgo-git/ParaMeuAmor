@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>💗 Para Você 💗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            overflow: hidden;
+            font-family: 'Georgia', serif;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #instrucao {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 22px;
+            text-shadow: 0 0 15px #ff69b4;
+            background: rgba(0,0,0,0.6);
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: 1px solid #ff69b4;
+            z-index: 20;
+            animation: pulse 1.8s infinite;
+            letter-spacing: 2px;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.8; box-shadow: 0 0 20px #ff69b4; }
+            50% { opacity: 1; box-shadow: 0 0 40px #ff1493; }
+            100% { opacity: 0.8; box-shadow: 0 0 20px #ff69b4; }
+        }
+
+        /* CARTA ANTIGA */
+        .carta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.2s ease;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .carta-overlay.visivel {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .carta-antiga {
+            width: 750px;
+            max-width: 90%;
+            background: #f9eac3;
+            padding: 50px;
+            border-radius: 30px 30px 30px 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 
+                        0 0 0 3px #b87c4b, 
+                        0 0 0 8px #d9b382;
+            position: relative;
+            border: 12px solid #b87c4b;
+            border-style: groove;
+            transform: rotate(0.8deg);
+            animation: surgirCarta 1.5s ease;
+        }
+
+        @keyframes surgirCarta {
+            0% { transform: rotate(0deg) scale(0.5); opacity: 0; }
+            100% { transform: rotate(0.8deg) scale(1); opacity: 1; }
+        }
+
+        /* Efeito de borda queimada */
+        .carta-antiga::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 40px;
+            background: radial-gradient(circle at 0% 0%, rgba(139,69,19,0.5) 0%, transparent 40%),
+                        radial-gradient(circle at 100% 100%, rgba(139,69,19,0.5) 0%, transparent 40%),
+                        radial-gradient(circle at 0% 100%, rgba(210,105,30,0.4) 0%, transparent 40%),
+                        radial-gradient(circle at 100% 0%, rgba(210,105,30,0.4) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .selo {
+            position: absolute;
+            top: -25px;
+            right: -25px;
+            width: 90px;
+            height: 90px;
+            background: #c9a355;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #4d2e1b;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 8px 20px black, 0 0 0 4px #f9eac3, 0 0 0 8px #b87c4b;
+            transform: rotate(12deg);
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 2px;
+            animation: brilhaSelo 2s infinite alternate;
+        }
+
+        @keyframes brilhaSelo {
+            from { box-shadow: 0 8px 20px black, 0 0 0 4px #f9eac3, 0 0 0 8px #b87c4b, 0 0 20px gold; }
+            to { box-shadow: 0 8px 30px black, 0 0 0 4px #f9eac3, 0 0 0 8px #daa520, 0 0 50px #ffd700; }
+        }
+
+        .selo:hover {
+            transform: rotate(12deg) scale(1.1);
+        }
+
+        .selo span {
+            font-size: 28px;
+        }
+
+        .conteudo-carta {
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 10px 20px 10px 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #b87c4b #f9eac3;
+        }
+
+        .conteudo-carta::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .conteudo-carta::-webkit-scrollbar-track {
+            background: #f9eac3;
+        }
+
+        .conteudo-carta::-webkit-scrollbar-thumb {
+            background: #b87c4b;
+            border-radius: 10px;
+        }
+
+        #textoCarta {
+            font-family: 'Dancing Script', 'Brush Script MT', cursive;
+            font-size: 28px;
+            line-height: 1.7;
+            color: #4a2c1a;
+            text-shadow: 1px 1px 0 #fff6d5;
+            white-space: pre-wrap;
+            min-height: 300px;
+        }
+
+        .area-secreta {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 3px double #b87c4b;
+            text-align: center;
+        }
+
+        #btnSecreto {
+            background: #8b5a2b;
+            color: #f9eac3;
+            border: 3px solid #d4a373;
+            padding: 12px 35px;
+            font-size: 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px black;
+        }
+
+        #btnSecreto:hover {
+            background: #a8753a;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px black;
+        }
+
+        #msgSecreta {
+            background: rgba(184, 124, 75, 0.2);
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 24px;
+            color: #3a2416;
+            border: 2px dashed #b87c4b;
+            display: none;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        #msgSecreta.visivel {
+            display: block;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ROSA FINAL */
+        .final-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            background: radial-gradient(ellipse at center, #0d0d2b, #000);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 2s ease;
+        }
+
+        .final-container.visivel {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rosa-final {
+            width: 320px;
+            height: 320px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><radialGradient id="petalaGrad"><stop offset="0%" stop-color="%23ff4d4d"/><stop offset="80%" stop-color="%23b30000"/></radialGradient></defs><path d="M50,20 Q30,10 18,30 Q10,45 25,60 Q35,70 50,80 Q65,70 75,60 Q90,45 82,30 Q70,10 50,20Z" fill="url(%23petalaGrad)"/><path d="M45,35 Q50,30 55,35 Q58,42 50,48 Q42,42 45,35Z" fill="%23ffcccc"/><circle cx="43" cy="40" r="3" fill="%23fff2b0"/><circle cx="57" cy="40" r="3" fill="%23fff2b0"/><path d="M45 60 Q50 70 55 60" stroke="%23ff4d4d" stroke-width="3" fill="none"/></svg>');
+            background-size: contain;
+            animation: girar 18s infinite linear;
+            filter: drop-shadow(0 0 50px #ff4d4d);
+        }
+
+        @keyframes girar {
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.1); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+
+        #fraseFinal {
+            margin-top: 50px;
+            color: white;
+            font-size: 48px;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 25px #ff69b4, 0 0 50px #ff1493;
+            text-align: center;
+            opacity: 0;
+            animation: aparecerFrase 2s 2.5s forwards;
+        }
+
+        #fraseFinal small {
+            display: block;
+            font-size: 38px;
+            margin-top: 25px;
+            color: #ffb6c1;
+        }
+
+        @keyframes aparecerFrase {
+            to { opacity: 1; }
+            from { opacity: 0; }
+        }
+
+        /* Botões de som */
+        .botoes-som {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-som {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(30,30,30,0.7);
+            backdrop-filter: blur(5px);
+            border: 2px solid #ff69b4;
+            color: white;
+            font-size: 26px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-som:hover {
+            background: #ff69b4;
+            transform: scale(1.1);
+        }
+
+        .btn-som.ativo {
+            background: #ff1493;
+            box-shadow: 0 0 20px #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div id="instrucao">💗 Clique para começar 💗</div>
+    
+    <!-- CARTA ANTIGA -->
+    <div class="carta-overlay" id="cartaOverlay">
+        <div class="carta-antiga">
+            <div class="selo" id="seloOpen">
+                <span>💌</span>
+                OPEN
+            </div>
+            <div class="conteudo-carta">
+                <div id="textoCarta"></div>
+                
+                <div class="area-secreta">
+                    <button id="btnSecreto">🔒 Só pra ela</button>
+                    <div id="msgSecreta"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ROSA FINAL -->
+    <div class="final-container" id="finalContainer">
+        <div class="rosa-final"></div>
+        <div id="fraseFinal">
+            <span id="euTeAmo"></span><br>
+            <small id="felizDia"></small>
+        </div>
+    </div>
+    
+    <!-- BOTÕES DE SOM -->
+    <div class="botoes-som">
+        <div class="btn-som" id="btnMusica">🎵</div>
+        <div class="btn-som" id="btnCoracao">💓</div>
+    </div>
+
+    <script>
+        // ===========================================
+        // CONFIGURAÇÕES - SÓ O QUE VOCÊ PEDIU
+        // ===========================================
+        const config = {
+            foto: 'minha-musa.jpg.jpg',
+            musica: 'Lana-Del-Rey.mp3.mp3',
+            
+            // TEXTO DA CARTA (coloque aqui SUA mensagem)
+            textoCarta: `Meu amor,
+
+Escrevo esta carta para registrar o que meu coração grita todos os dias: você é a pessoa mais incrível que já conheci.
+
+Seu olhar me encanta, seu sorriso me desarma, sua presença me completa.
+
+Hoje, no Dia das Mulheres, quero celebrar a mulher maravilhosa que você é. O mundo é mais bonito porque você está nele.
+
+Te amo hoje, amanhã e sempre.
+
+Com amor,
+[Seu nome] ❤️`,
+            
+            // TEXTO SECRETO (só pra ela)
+            textoSecreto: `Agora é só nós dois...
+
+Você é a dona do meu coração, a razão do meu sorriso, a paz da minha alma.
+
+Esse segredo é nosso: eu te amo mais do que consigo expressar.
+
+Guardei esse espaço só pra você, porque você merece tudo de mais especial.
+
+Pra sempre seu,
+[Seu nome] 💕`,
+            
+            seuNome: 'Seu nome aqui',
+        };
+
+        // ===========================================
+        // INICIALIZAÇÃO
+        // ===========================================
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Áudio
+        const musica = new Audio();
+        musica.loop = true;
+        musica.volume = 0.3;
+        
+        // Variáveis
+        let estagio = 0;
+        let particulas = [];
+        let particulasOlhar = [];
+        let petalas = [];
+        let chamas = [];
+        let animationId;
+        
+        // ===========================================
+        // CARREGAR FOTO DELA
+        // ===========================================
+        const img = new Image();
+        img.src = config.foto;
+        img.crossOrigin = 'anonymous';
+        
+        img.onload = function() {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            const maxWidth = 300;
+            const scale = maxWidth / img.width;
+            tempCanvas.width = maxWidth;
+            tempCanvas.height = img.height * scale;
+            
+            tempCtx.drawImage(img, 0, 0, tempCanvas.width, tempCanvas.height);
+            
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imageData.data;
+            
+            for (let y = 0; y < tempCanvas.height; y += 2) {
+                for (let x = 0; x < tempCanvas.width; x += 2) {
+                    const index = (y * tempCanvas.width + x) * 4;
+                    const brightness = (data[index] + data[index+1] + data[index+2]) / 3;
+                    
+                    if (brightness > 30 && brightness < 230) {
+                        particulasOlhar.push({
+                            targetX: (x - tempCanvas.width/2) * 2 + canvas.width/2,
+                            targetY: (y - tempCanvas.height/2) * 2 + canvas.height/2 - 50,
+                            currentX: Math.random() * canvas.width,
+                            currentY: Math.random() * canvas.height,
+                            cor: `rgba(255, 105, 180, ${0.5 + Math.random()*0.5})`,
+                            tamanho: 2 + Math.random() * 4,
+                            velocidade: 0.02 + Math.random() * 0.02
+                        });
+                    }
+                }
+            }
+        };
+
+        // ===========================================
+        // CORAÇÃO DE LUZ (IGUAL DO DNA-HEART)
+        // ===========================================
+        function criarCoracao() {
+            const pts = [];
+            for (let i = 0; i < 1800; i++) {
+                const t = Math.random() * Math.PI * 2;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                
+                pts.push({
+                    targetX: (x * 22) + canvas.width/2,
+                    targetY: (y * -22) + canvas.height/2,
+                    currentX: Math.random() * canvas.width,
+                    currentY: Math.random() * canvas.height,
+                    cor: `rgba(255, 105, 180, ${0.7 + Math.random()*0.3})`,
+                    tamanho: 2.5 + Math.random() * 4,
+                    velocidade: 0.025 + Math.random() * 0.02
+                });
+            }
+            return pts;
+        }
+
+        // ===========================================
+        // FRASE "EU AMO VOCÊ" EM LUZ
+        // ===========================================
+        function criarFraseLuz() {
+            const pts = [];
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            tempCanvas.width = 700;
+            tempCanvas.height = 150;
+            
+            tempCtx.font = 'bold 80px Arial';
+            tempCtx.fillStyle = 'white';
+            tempCtx.textAlign = 'center';
+            tempCtx.fillText('EU AMO VOCÊ', tempCanvas.width/2, tempCanvas.height/2);
+            
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imageData.data;
+            
+            for (let y = 0; y < tempCanvas.height; y += 3) {
+                for (let x = 0; x < tempCanvas.width; x += 3) {
+                    const index = (y * tempCanvas.width + x) * 4;
+                    if (data[index] > 128) {
+                        pts.push({
+                            targetX: (x - tempCanvas.width/2) + canvas.width/2,
+                            targetY: (y - tempCanvas.height/2) + canvas.height/2 - 30,
+                            currentX: Math.random() * canvas.width,
+                            currentY: Math.random() * canvas.height,
+                            cor: `rgba(255, 105, 180, 0.9)`,
+                            tamanho: 3.5,
+                            velocidade: 0.03
+                        });
+                    }
+                }
+            }
+            return pts;
+        }
+
+        // ===========================================
+        // PÉTALAS BONITAS (MELHORADAS)
+        // ===========================================
+        function criarPetalas() {
+            for (let i = 0; i < 250; i++) {
+                petalas.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    tamanho: 15 + Math.random() * 25,
+                    velY: 1 + Math.random() * 3,
+                    velX: (Math.random() - 0.5) * 0.8,
+                    rot: Math.random() * Math.PI * 2,
+                    cor: `rgba(220, 20, 60, ${0.5 + Math.random()*0.4})`,
+                    formato: Math.random() * 2
+                });
+            }
+        }
+
+        // ===========================================
+        // FOGO REALISTA (MELHORADO)
+        // ===========================================
+        function criarFogo() {
+            for (let i = 0; i < 200; i++) {
+                chamas.push({
+                    x: canvas.width/2 + (Math.random() - 0.5) * 300,
+                    y: canvas.height/2 + 80,
+                    tamanho: 15 + Math.random() * 45,
+                    velY: -1.5 - Math.random() * 4,
+                    velX: (Math.random() - 0.5) * 1,
+                    vida: 0.8 + Math.random() * 0.4,
+                    cor: `hsl(${20 + Math.random()*20}, 100%, 60%)`
+                });
+            }
+        }
+
+        // ===========================================
+        // ANIMAÇÃO
+        // ===========================================
+        function animar() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Partículas
+            if (particulas.length > 0) {
+                particulas.forEach(p => {
+                    p.currentX += (p.targetX - p.currentX) * p.velocidade;
+                    p.currentY += (p.targetY - p.currentY) * p.velocidade;
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.currentX, p.currentY, p.tamanho, 0, 2 * Math.PI);
+                    
+                    const grad = ctx.createRadialGradient(
+                        p.currentX, p.currentY, 0,
+                        p.currentX, p.currentY, p.tamanho * 3
+                    );
+                    grad.addColorStop(0, p.cor);
+                    grad.addColorStop(1, 'rgba(255,255,255,0)');
+                    
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                });
+            }
+            
+            // Pétalas
+            petalas.forEach(p => {
+                p.y += p.velY;
+                p.x += p.velX;
+                p.rot += 0.01;
+                
+                if (p.y > canvas.height + 50) {
+                    p.y = -50;
+                    p.x = Math.random() * canvas.width;
+                }
+                
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                
+                // Formato de pétala mais bonito
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.quadraticCurveTo(p.tamanho/2, -p.tamanho/3, p.tamanho, 0);
+                ctx.quadraticCurveTo(p.tamanho/2, p.tamanho/3, 0, 0);
+                ctx.fillStyle = p.cor;
+                ctx.fill();
+                ctx.restore();
+            });
+            
+            // Fogo
+            chamas.forEach((c, i) => {
+                c.y += c.velY;
+                c.x += c.velX;
+                c.vida -= 0.003;
+                
+                if (c.vida <= 0 || c.y < canvas.height/2 - 150) {
+                    chamas[i] = {
+                        x: canvas.width/2 + (Math.random() - 0.5) * 300,
+                        y: canvas.height/2 + 80,
+                        tamanho: 15 + Math.random() * 45,
+                        velY: -1.5 - Math.random() * 4,
+                        velX: (Math.random() - 0.5) * 1,
+                        vida: 0.8 + Math.random() * 0.4,
+                        cor: `hsl(${20 + Math.random()*20}, 100%, 60%)`
+                    };
+                }
+                
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.tamanho * c.vida, 0, 2 * Math.PI);
+                
+                const grad = ctx.createRadialGradient(
+                    c.x, c.y, 0,
+                    c.x, c.y, c.tamanho * c.vida * 2
+                );
+                grad.addColorStop(0, `rgba(255, 255, 180, ${c.vida})`);
+                grad.addColorStop(0.4, `rgba(255, 100, 0, ${c.vida})`);
+                grad.addColorStop(1, 'rgba(255, 0, 0, 0)');
+                
+                ctx.fillStyle = grad;
+                ctx.fill();
+            });
+            
+            animationId = requestAnimationFrame(animar);
+        }
+
+        // ===========================================
+        // CONTROLE DE CLIQUE
+        // ===========================================
+        document.getElementById('instrucao').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        container.addEventListener('click', (e) => {
+            // Ignora cliques em botões
+            if (e.target.closest('.selo') || e.target.closest('#btnSecreto') || e.target.closest('.btn-som')) {
+                return;
+            }
+            
+            estagio++;
+            const inst = document.getElementById('instrucao');
+            
+            switch(estagio) {
+                case 1:
+                    particulas = criarCoracao();
+                    inst.innerHTML = '💗 Coração de luz 💗';
+                    break;
+                case 2:
+                    if (particulasOlhar.length > 0) {
+                        particulas = particulasOlhar;
+                    }
+                    inst.innerHTML = '✨ O olhar dela ✨';
+                    break;
+                case 3:
+                    particulas = criarFraseLuz();
+                    inst.innerHTML = '💘 Eu amo você 💘';
+                    break;
+                case 4:
+                    particulas = [];
+                    criarPetalas();
+                    inst.innerHTML = '🌹 Chuva de pétalas 🌹';
+                    break;
+                case 5:
+                    criarFogo();
+                    inst.innerHTML = '🔥 Fogo e carta 🔥';
+                    break;
+                case 6:
+                    petalas = [];
+                    chamas = [];
+                    document.getElementById('cartaOverlay').classList.add('visivel');
+                    inst.style.opacity = '0';
+                    break;
+            }
+        });
+
+        // ===========================================
+        // ABRIR CARTA
+        // ===========================================
+        document.getElementById('seloOpen').addEventListener('click', function() {
+            const textoEl = document.getElementById('textoCarta');
+            const texto = config.textoCarta.replace('[Seu nome]', config.seuNome);
+            
+            textoEl.innerHTML = '';
+            let i = 0;
+            
+            function digitar() {
+                if (i < texto.length) {
+                    textoEl.innerHTML += texto[i];
+                    i++;
+                    setTimeout(digitar, 45);
+                }
+            }
+            digitar();
+        });
+
+        // ===========================================
+        // TEXTO SECRETO
+        // ===========================================
+        document.getElementById('btnSecreto').addEventListener('click', function() {
+            const msg = document.getElementById('msgSecreta');
+            msg.classList.toggle('visivel');
+            
+            if (msg.classList.contains('visivel')) {
+                msg.innerHTML = config.textoSecreto.replace('[Seu nome]', config.seuNome);
+                this.innerHTML = '🤍 Fechar';
+            } else {
+                this.innerHTML = '🔒 Só pra ela';
+            }
+        });
+
+        // ===========================================
+        // ROSA FINAL
+        // ===========================================
+        function mostrarFinal() {
+            const final = document.getElementById('finalContainer');
+            final.classList.add('visivel');
+            
+            const euTeAmo = document.getElementById('euTeAmo');
+            const felizDia = document.getElementById('felizDia');
+            
+            euTeAmo.innerHTML = '';
+            felizDia.innerHTML = '';
+            
+            setTimeout(() => {
+                const texto1 = 'Eu te amo.';
+                let i = 0;
+                const int1 = setInterval(() => {
+                    if (i < texto1.length) {
+                        euTeAmo.innerHTML += texto1[i];
+                        i++;
+                    } else {
+                        clearInterval(int1);
+                        setTimeout(() => {
+                            const texto2 = 'Feliz Dia das Mulheres';
+                            let j = 0;
+                            const int2 = setInterval(() => {
+                                if (j < texto2.length) {
+                                    felizDia.innerHTML += texto2[j];
+                                    j++;
+                                } else {
+                                    clearInterval(int2);
+                                }
+                            }, 60);
+                        }, 800);
+                    }
+                }, 100);
+            }, 500);
+        }
+
+        // Quando clicar fora da carta, mostra final
+        document.getElementById('cartaOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('visivel');
+                document.getElementById('instrucao').style.opacity = '1';
+                document.getElementById('instrucao').innerHTML = '🌹 Clique para o final 🌹';
+                
+                setTimeout(() => {
+                    container.addEventListener('click', function ultimo() {
+                        mostrarFinal();
+                        container.removeEventListener('click', ultimo);
+                    }, { once: true });
+                }, 300);
+            }
+        });
+
+        // ===========================================
+        // CONTROLE DE SOM
+        // ===========================================
+        document.getElementById('btnMusica').addEventListener('click', function() {
+            if (musica.paused) {
+                musica.src = config.musica;
+                musica.play().catch(() => {
+                    alert('Clique na tela primeiro para ativar a música');
+                });
+                this.classList.add('ativo');
+            } else {
+                musica.pause();
+                this.classList.remove('ativo');
+            }
+        });
+        
+        document.getElementById('btnCoracao').addEventListener('click', function() {
+            this.classList.toggle('ativo');
+            if (this.classList.contains('ativo')) {
+                // Simula batimentos
+                window.batimentos = setInterval(() => {
+                    const beep = new Audio();
+                    beep.src = 'data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAAA8AHgAzAEIAkgCjALQAxADUAOUA9QEFARUBFQEVARUBFQEVAQ==';
+                    beep.volume = 0.2;
+                    beep.play();
+                }, 800);
+            } else {
+                clearInterval(window.batimentos);
+            }
+        });
+
+        // Iniciar
+        particulas = criarCoracao();
+        animar();
+    </script>
+</body>
+</html>

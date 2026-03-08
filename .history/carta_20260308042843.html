@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Renata</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --gold: #d4af37; --pink: #ff2b6a; --wine: #4a0e0e; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: 'Cinzel', serif; overflow: hidden; height: 100vh; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+
+        .layer {
+            position: absolute; width: 100%; height: 100%; z-index: 10;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; transition: opacity 1s ease; opacity: 0; pointer-events: none;
+            text-align: center;
+        }
+        .active { opacity: 1; pointer-events: auto; }
+
+        /* Estilo da Folha (Geral) */
+        .parchment {
+            width: 90%; max-width: 450px; aspect-ratio: 3/4;
+            padding: 60px 40px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            background-size: 100% 100% !important;
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Folha 1 (Clara) */
+        .clara { background: url('folha_clara.jpg') no-repeat; color: #2c1e1a; }
+        /* Folha 2 (Preta) */
+        .preta { background: url('folha_preta.jpg') no-repeat; color: #ffffff; }
+
+        .text-box { font-size: 1.4rem; line-height: 1.5; min-height: 150px; width: 100%; }
+
+        /* Botões Interativos */
+        .btn-container { 
+            display: flex; gap: 15px; margin-top: 30px; 
+            justify-content: center; width: 100%; 
+        }
+        .btn-ui {
+            background: var(--wine); color: var(--gold); border: 1px solid var(--gold);
+            padding: 12px 20px; cursor: pointer; border-radius: 8px;
+            font-family: 'Cinzel', serif; font-size: 0.8rem; transition: 0.3s;
+        }
+        .btn-ui:hover { transform: scale(1.1); background: #631414; }
+
+        /* Input de Senha Discreto */
+        #password-screen {
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+        }
+        input {
+            background: transparent; border: none; border-bottom: 2px solid var(--gold);
+            color: var(--gold); font-size: 2rem; text-align: center; width: 150px; outline: none;
+        }
+
+        /* Rosa Final Giratória */
+        .rosa-final { font-size: 100px; animation: rotateVertical 4s infinite linear; }
+        @keyframes rotateVertical { 
+            from { transform: rotateY(0deg); } 
+            to { transform: rotateY(360deg); } 
+        }
+    </style>
+</head>
+<body onclick="handleGlobalClick()">
+
+    <audio id="musica" loop><source src="Lana-Del-Rey.mp3" type="audio/mp3"></audio>
+    <canvas id="mainCanvas"></canvas>
+
+    <!-- FOTO + FRASE -->
+    <div id="step1" class="layer">
+        <img src="renata.jpg" style="width:250px; border-radius:15px; border:2px solid var(--pink); box-shadow:0 0 30px var(--pink);">
+        <h1 style="margin-top:20px; color:var(--pink); letter-spacing:4px;">EU AMO VOCÊ</h1>
+    </div>
+
+    <!-- ENVELOPE -->
+    <div id="step2" class="layer">
+        <div id="envelope-box" style="transform: translateY(100vh); transition: 1.5s;">
+            <img src="envelope.jpg" style="width:350px; border-radius:10px;">
+            <button class="btn-ui" style="position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); border-radius:50px;" onclick="openLetter(event)">OPEN</button>
+        </div>
+    </div>
+
+    <!-- FOLHA CLARA -->
+    <div id="step3" class="layer">
+        <div class="parchment clara">
+            <div id="typewriter1" class="text-box"></div>
+            <div id="btns-texto1" class="btn-container" style="display:none;">
+                <button class="btn-ui" onclick="showPassInput(event)">SÓ PARA VOCÊ</button>
+                <button class="btn-ui" onclick="goFinal(event)">CONTINUE ❤️</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TELA DE SENHA -->
+    <div id="password-screen" class="layer">
+        <h2 style="color:var(--gold); margin-bottom:20px;">Digite o Código</h2>
+        <input type="password" id="pass-input" maxlength="4" placeholder="****" oninput="checkPass(this)">
+    </div>
+
+    <!-- FOLHA PRETA -->
+    <div id="step5" class="layer">
+        <div class="parchment preta">
+            <div id="typewriter2" class="text-box"></div>
+            <button class="btn-ui" style="margin-top:20px" onclick="goFinal(event)">VOLTAR</button>
+        </div>
+    </div>
+
+    <!-- ROSA FINAL -->
+    <div id="step6" class="layer">
+        <div class="rosa-final">🌹</div>
+        <h1 style="color:var(--pink); margin-top:20px;">TE AMO</h1>
+        <h2 style="color:var(--gold); margin-top:10px;">FELIZ DIA DAS MULHERES</h2>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        let stage = 0;
+        let particles = [];
+
+        // --- CONFIGURE SEUS TEXTOS AQUI ---
+        const texto1 = "Renata,\n\nEste é o primeiro texto escrito na folha clara. Aqui você pode colocar toda a sua declaração inicial de forma elegante e emocionante...";
+        const texto2 = "Este é o segredo...\n\nO texto da folha preta aparece apenas para quem tem a chave do seu coração. Letras brancas para destacar o nosso mistério.";
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        // --- CORAÇÃO COM FEIXES DE LUZ ---
+        function drawHeart(sc, color, rot) {
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            ctx.rotate(rot);
+            ctx.beginPath();
+            ctx.strokeStyle = color;
+            ctx.shadowBlur = 20; ctx.shadowColor = color;
+            for (let t = 0; t <= Math.PI * 2; t += 0.05) {
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                ctx.lineTo(x * sc, y * sc);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // --- PETALAS ---
+        function drawPetals() {
+            if(stage >= 2 && Math.random() > 0.9) particles.push({x:Math.random()*canvas.width, y:-20, s:Math.random()*5+2, sp:Math.random()*2+1});
+            particles.forEach((p, i) => {
+                p.y += p.sp;
+                ctx.fillStyle = "#ffb7c5";
+                ctx.beginPath(); ctx.ellipse(p.x, p.y, p.s, p.s/1.5, Math.PI/4, 0, Math.PI*2); ctx.fill();
+                if(p.y > canvas.height) particles.splice(i, 1);
+            });
+        }
+
+        function animate() {
+            ctx.fillStyle = "rgba(0,0,0,0.15)";
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            const time = Date.now() * 0.002;
+
+            // --- ANIMAÇÃO DO CORAÇÃO ---
+            if(stage === 0) {
+                drawHeart(10 + Math.sin(time)*2, "#fff", time);       // feixes de luz oscilando
+            }
+            if(stage === 1) drawHeart(22, "#ff2b6a", 0); // coração fixo na foto
+            if(stage >= 5) drawHeart(15, "#f00", time); // efeito final opcional
+
+            drawPetals();
+            requestAnimationFrame(animate);
+        }
+
+        // --- NAVEGAÇÃO ---
+        function handleGlobalClick() {
+            if(stage === 0) {
+                document.getElementById('musica').play();
+                document.getElementById('step1').classList.add('active');
+                stage = 1;
+            } else if(stage === 1) {
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                setTimeout(() => { document.getElementById('envelope-box').style.transform = "translateY(0)"; }, 100);
+                stage = 2;
+            }
+        }
+
+        function openLetter(e) {
+            e.stopPropagation();
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step3').classList.add('active');
+            stage = 3;
+            typeWrite('typewriter1', texto1, () => {
+                document.getElementById('btns-texto1').style.display = 'flex';
+            });
+        }
+
+        function typeWrite(id, txt, cb) {
+            let i = 0;
+            const el = document.getElementById(id);
+            el.innerHTML = "";
+            const timer = setInterval(() => {
+                el.innerHTML += txt.charAt(i);
+                i++;
+                if(i >= txt.length) { clearInterval(timer); if(cb) cb(); }
+            }, 50);
+        }
+
+        function showPassInput(e) {
+            e.stopPropagation();
+            document.getElementById('password-screen').classList.add('active');
+        }
+
+        function checkPass(el) {
+            if(el.value === "0312") {
+                document.getElementById('password-screen').classList.remove('active');
+                document.getElementById('step3').classList.remove('active');
+                document.getElementById('step5').classList.add('active');
+                typeWrite('typewriter2', texto2);
+            }
+        }
+
+        function goFinal(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+            document.getElementById('step6').classList.add('active');
+            stage = 6;
+        }
+
+        window.addEventListener('resize', init);
+        init(); animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Renata</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --pink-glow: #ff2b6a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #050505;
+            color: #fff;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ESTADOS E ETAPAS */
+        .stage {
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .active { opacity: 1; pointer-events: auto; }
+
+        /* ETAPA 1: O ENVELOPE LACRADO */
+        #envelope-img {
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            border-radius: 5px;
+            transition: transform 0.5s;
+        }
+        #envelope-img:hover { transform: scale(1.03); }
+        .click-hint {
+            margin-top: 20px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 2px;
+            color: var(--gold);
+            animation: pulse 2s infinite;
+        }
+
+        /* ETAPA 2: FOTO */
+        #foto {
+            width: 70%;
+            max-width: 300px;
+            border-radius: 15px;
+            border: 3px solid var(--pink-glow);
+            box-shadow: 0 0 40px var(--pink-glow);
+        }
+
+        /* ETAPA 3 e 5: O PERGAMINHO REPRODUZIDO */
+        .parchment {
+            width: 90%;
+            max-width: 450px;
+            aspect-ratio: 3/4; /* Mantém a proporção da folha */
+            background-image: url('download (2).jpg'); /* SUA IMAGEM DA FOLHA */
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 45px;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
+        }
+
+        .scroll-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            line-height: 1.4;
+            color: #2c1e1a;
+            margin-bottom: 20px;
+        }
+
+        /* SENHA */
+        .pass-box {
+            background: rgba(0, 0, 0, 0.85);
+            padding: 40px;
+            border: 1px solid var(--gold);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        #pass-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--gold);
+            color: var(--gold);
+            font-size: 2.5rem;
+            width: 150px;
+            text-align: center;
+            outline: none;
+            margin-top: 20px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        .btn-continue {
+            background: #4a0e0e;
+            color: #e0c097;
+            border: 1px solid #7a2a2a;
+            padding: 10px 25px;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .btn-continue:hover { background: #631414; }
+
+    </style>
+</head>
+<body onclick="handleStep()">
+
+    <audio id="musica" loop>
+        <source src="Lana-Del-Rey.mp3" type="audio/mp3">
+    </audio>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="step1" class="stage active">
+        <img id="envelope-img" src="download (3).jpg" alt="Envelope">
+        <div class="click-hint">Toque para abrir</div>
+    </div>
+
+    <div id="step2" class="stage">
+        <img id="foto" src="renata.jpg">
+        <div style="margin-top:20px; color: var(--pink-glow); font-size: 24px; letter-spacing: 5px; font-family: 'Cinzel';">EU AMO VOCÊ</div>
+    </div>
+
+    <div id="step3" class="stage">
+        <div class="parchment">
+            <div class="scroll-text">
+                "Renata, em cada linha deste código existe um pouco do que eu sinto por você. Algumas coisas não precisam de lógica, apenas de sentir."
+            </div>
+            <button class="btn-continue" onclick="goPass(event)">Abrir Destino</button>
+        </div>
+    </div>
+
+    <div id="step4" class="stage">
+        <div class="pass-box">
+            <div style="font-size: 2rem; color: var(--gold)">🔒</div>
+            <p style="color:var(--gold); font-family: 'Cinzel'; margin-top:10px;">Apenas para seus olhos</p>
+            <input type="password" id="pass-input" maxlength="4" placeholder="****" oninput="verifyPass(this)">
+        </div>
+    </div>
+
+    <div id="step5" class="stage">
+        <div class="parchment">
+            <h2 style="font-family: 'Cinzel'; color: #4a0e0e; margin-bottom: 15px;">Para Sempre</h2>
+            <div class="scroll-text" style="font-size: 1.3rem;">
+                "O amor não é algo que você encontra. O amor é algo que encontra você.<br><br>
+                Obrigado por ser meu destino. Que o nosso 'sempre' comece todos os dias quando eu te vejo."
+            </div>
+            <span style="font-size: 1.5rem;">🌹</span>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const music = document.getElementById('musica');
+        
+        let width, height, stage = 1;
+        let particles = [];
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        // Desenha as pétalas caindo
+        function drawPetals() {
+            if(stage >= 2 && Math.random() > 0.92) {
+                particles.push({
+                    x: Math.random()*width, 
+                    y:-20, 
+                    size: Math.random()*5+2, 
+                    speed: Math.random()*1.5+0.5, 
+                    angle: Math.random()*360,
+                    cos: Math.random() * 2
+                });
+            }
+            particles.forEach((p, i) => {
+                p.y += p.speed;
+                p.x += Math.sin(p.y / 30) * p.cos;
+                p.angle += 0.5;
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.angle * Math.PI / 180);
+                ctx.fillStyle = "#ffb7c5";
+                ctx.beginPath();
+                ctx.ellipse(0, 0, p.size, p.size/1.5, 0, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+                if(p.y > height) particles.splice(i, 1);
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            drawPetals();
+            requestAnimationFrame(animate);
+        }
+
+        function handleStep() {
+            if (stage === 1) {
+                music.play().catch(() => {});
+                document.getElementById('step1').classList.remove('active');
+                document.getElementById('step2').classList.add('active');
+                stage = 2;
+            } else if (stage === 2) {
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step3').classList.add('active');
+                stage = 3;
+            }
+        }
+
+        function goPass(e) {
+            e.stopPropagation();
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step4').classList.add('active');
+            stage = 4;
+        }
+
+        function verifyPass(el) {
+            if(el.value === "0312") {
+                document.getElementById('step4').classList.remove('active');
+                document.getElementById('step5').classList.add('active');
+                stage = 5;
+            } else if(el.value.length >= 4) {
+                el.style.borderColor = "red";
+                setTimeout(() => { el.value = ""; el.style.borderColor = "var(--gold)"; }, 500);
+            }
+        }
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
+    </script>
+</body>
+</html>

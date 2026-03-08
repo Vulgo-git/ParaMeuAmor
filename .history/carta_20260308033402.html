@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Renata</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:radial-gradient(circle at center,#2b0015,#000);
+font-family:Georgia,serif;
+color:white;
+}
+
+#ui{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+pointer-events:none;
+}
+
+#foto{
+width:75%;
+max-width:320px;
+border-radius:18px;
+border:4px solid #ff3d7a;
+box-shadow:
+0 0 25px rgba(255,60,120,0.9),
+0 0 60px rgba(255,60,120,0.5);
+display:none;
+}
+
+#frase{
+margin-top:20px;
+font-size:28px;
+letter-spacing:5px;
+font-weight:300;
+color:#ff4f87;
+text-shadow:0 0 15px #ff4f87;
+display:none;
+}
+
+#envelope{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:260px;
+height:170px;
+background:#f5e6d3;
+border:4px solid #a0002a;
+border-radius:6px;
+display:none;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-size:18px;
+color:#600018;
+}
+
+#selo{
+margin-top:10px;
+background:#a0002a;
+color:white;
+padding:8px 20px;
+border-radius:20px;
+cursor:pointer;
+pointer-events:auto;
+}
+
+#carta{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:85%;
+height:65%;
+background:#f8f1e6;
+color:#3a2c2c;
+padding:25px;
+display:none;
+font-style:italic;
+box-shadow:0 0 40px rgba(0,0,0,0.6);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="ui">
+<img id="foto" src="renata.jpg">
+<div id="frase">EU AMO VOCÊ</div>
+</div>
+
+<div id="envelope">
+Para você
+<div id="selo">OPEN</div>
+</div>
+
+<div id="carta">
+Aqui vai aparecer a carta que você vai escrever depois.
+</div>
+
+<audio id="musica" src="Lana-Del-Rey.mp3"></audio>
+
+<script>
+
+let scene = new THREE.Scene()
+
+let camera = new THREE.PerspectiveCamera(
+75,
+window.innerWidth/window.innerHeight,
+0.1,
+1000
+)
+
+let renderer = new THREE.WebGLRenderer({alpha:true})
+renderer.setSize(window.innerWidth,window.innerHeight)
+document.body.appendChild(renderer.domElement)
+
+camera.position.z = 60
+
+let heart
+let particles=[]
+
+function createHeart(){
+
+let geometry = new THREE.BufferGeometry()
+let positions=[]
+
+for(let i=0;i<2000;i++){
+
+let t=Math.random()*Math.PI*2
+
+let x=16*Math.pow(Math.sin(t),3)
+let y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)
+
+positions.push(x*1.5)
+positions.push(y*1.5)
+positions.push((Math.random()-0.5)*5)
+
+particles.push({
+vx:(Math.random()-0.5)*0.2,
+vy:(Math.random()-0.5)*0.2
+})
+
+}
+
+geometry.setAttribute(
+'position',
+new THREE.Float32BufferAttribute(positions,3)
+)
+
+let material = new THREE.PointsMaterial({
+color:0xff2b6a,
+size:0.6
+})
+
+heart = new THREE.Points(geometry,material)
+
+scene.add(heart)
+
+}
+
+createHeart()
+
+function animate(){
+
+requestAnimationFrame(animate)
+
+if(heart){
+heart.rotation.y += 0.002
+}
+
+renderer.render(scene,camera)
+
+}
+
+animate()
+
+let stage=0
+
+document.body.addEventListener("click",()=>{
+
+if(stage===0){
+
+document.getElementById("musica").play()
+
+stage=1
+}
+
+else if(stage===1){
+
+explodeHeart()
+
+stage=2
+}
+
+else if(stage===2){
+
+showPhoto()
+
+stage=3
+}
+
+else if(stage===3){
+
+startPetals()
+
+document.getElementById("foto").style.display="none"
+document.getElementById("frase").style.display="none"
+
+document.getElementById("envelope").style.display="flex"
+
+stage=4
+}
+
+})
+
+function explodeHeart(){
+
+let pos = heart.geometry.attributes.position.array
+
+for(let i=0;i<pos.length;i+=3){
+
+pos[i]+= (Math.random()-0.5)*40
+pos[i+1]+= (Math.random()-0.5)*40
+
+}
+
+heart.geometry.attributes.position.needsUpdate=true
+
+}
+
+function showPhoto(){
+
+document.getElementById("foto").style.display="block"
+document.getElementById("frase").style.display="block"
+
+}
+
+function startPetals(){
+
+setInterval(()=>{
+
+let petal=document.createElement("div")
+
+petal.innerHTML="🌸"
+
+petal.style.position="absolute"
+petal.style.left=Math.random()*window.innerWidth+"px"
+petal.style.top="-20px"
+petal.style.fontSize="22px"
+
+document.body.appendChild(petal)
+
+let fall=setInterval(()=>{
+
+petal.style.top=(petal.offsetTop+2)+"px"
+
+if(petal.offsetTop>window.innerHeight){
+
+clearInterval(fall)
+petal.remove()
+
+}
+
+},20)
+
+},200)
+
+}
+
+document.getElementById("selo").onclick=()=>{
+
+document.getElementById("envelope").style.display="none"
+
+document.getElementById("carta").style.display="block"
+
+}
+
+</script>
+
+</body>
+</html>

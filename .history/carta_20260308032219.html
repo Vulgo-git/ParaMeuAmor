@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Renata</title>
+
+<style>
+
+body{
+margin:0;
+background:radial-gradient(circle,#200010,#000);
+overflow:hidden;
+font-family:serif;
+color:white;
+text-align:center;
+}
+
+canvas{
+position:absolute;
+top:0;
+left:0;
+}
+
+#foto{
+position:absolute;
+top:45%;
+left:50%;
+transform:translate(-50%,-50%);
+width:75%;
+max-width:320px;
+border-radius:12px;
+box-shadow:0 0 40px rgba(255,0,80,0.7);
+display:none;
+}
+
+#frase{
+position:absolute;
+top:72%;
+width:100%;
+font-size:26px;
+letter-spacing:5px;
+font-weight:300;
+color:#ff3b6b;
+text-shadow:0 0 15px #ff3b6b;
+display:none;
+}
+
+#envelope{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:260px;
+height:170px;
+background:#f5e6d3;
+border:3px solid #a0002a;
+border-radius:6px;
+display:none;
+}
+
+#selo{
+position:absolute;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+background:#a0002a;
+color:white;
+padding:8px 18px;
+border-radius:20px;
+font-size:14px;
+cursor:pointer;
+}
+
+#carta{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:85%;
+height:70%;
+background:#f6efe4;
+color:#3a2b2b;
+padding:25px;
+font-style:italic;
+display:none;
+box-shadow:0 0 30px rgba(0,0,0,0.6);
+}
+
+#continuar{
+margin-top:20px;
+padding:10px 20px;
+background:#a0002a;
+color:white;
+border:none;
+border-radius:20px;
+display:none;
+}
+
+#rosa{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:120px;
+display:none;
+animation:girar 10s linear infinite;
+}
+
+#final{
+position:absolute;
+bottom:20%;
+width:100%;
+font-size:28px;
+display:none;
+text-shadow:0 0 15px pink;
+}
+
+@keyframes girar{
+0%{transform:translate(-50%,-50%) rotate(0deg);}
+100%{transform:translate(-50%,-50%) rotate(360deg);}
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="c"></canvas>
+
+<img src="renata.jpg" id="foto">
+
+<div id="frase">EU AMO VOCÊ</div>
+
+<div id="envelope">
+<div id="selo">OPEN</div>
+</div>
+
+<div id="carta">
+<div id="texto"></div>
+<button id="continuar">continuar</button>
+</div>
+
+<div id="rosa">🌹</div>
+
+<div id="final">
+Eu te amo.<br>
+Feliz Dia das Mulheres
+</div>
+
+<audio id="musica" src="Lana-Del-Rey.mp3"></audio>
+
+<script>
+
+const canvas=document.getElementById("c")
+const ctx=canvas.getContext("2d")
+
+canvas.width=innerWidth
+canvas.height=innerHeight
+
+let heartParticles=[]
+let stage=0
+
+function createHeart(){
+
+heartParticles=[]
+
+for(let i=0;i<700;i++){
+
+let t=Math.random()*Math.PI*2
+
+let x=16*Math.pow(Math.sin(t),3)
+let y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)
+
+heartParticles.push({
+x:canvas.width/2+x*12,
+y:canvas.height/2-y*12,
+vx:(Math.random()-0.5)*1,
+vy:(Math.random()-0.5)*1
+})
+
+}
+
+}
+
+createHeart()
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.2)"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#ff2b6a"
+
+heartParticles.forEach(p=>{
+
+p.x+=p.vx
+p.y+=p.vy
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,2,0,Math.PI*2)
+ctx.fill()
+
+})
+
+requestAnimationFrame(draw)
+
+}
+
+draw()
+
+document.body.addEventListener("click",()=>{
+
+if(stage===0){
+
+document.getElementById("musica").play()
+
+heartParticles.forEach(p=>{
+p.vx=(Math.random()-0.5)*6
+p.vy=(Math.random()-0.5)*6
+})
+
+setTimeout(()=>{
+
+document.getElementById("foto").style.display="block"
+document.getElementById("frase").style.display="block"
+
+},800)
+
+stage=1
+}
+
+else if(stage===1){
+
+document.getElementById("foto").style.display="none"
+document.getElementById("frase").style.display="none"
+
+startPetals()
+
+document.getElementById("envelope").style.display="block"
+
+stage=2
+
+}
+
+})
+
+function startPetals(){
+
+setInterval(()=>{
+
+let p=document.createElement("div")
+p.innerHTML="🌸"
+
+p.style.position="absolute"
+p.style.left=Math.random()*innerWidth+"px"
+p.style.top="-20px"
+p.style.fontSize="22px"
+
+document.body.appendChild(p)
+
+let fall=setInterval(()=>{
+
+p.style.top=(p.offsetTop+2)+"px"
+
+if(p.offsetTop>innerHeight){
+clearInterval(fall)
+p.remove()
+}
+
+},20)
+
+},200)
+
+}
+
+document.getElementById("selo").onclick=()=>{
+
+document.getElementById("envelope").style.display="none"
+document.getElementById("carta").style.display="block"
+
+document.getElementById("continuar").style.display="inline-block"
+
+}
+
+document.getElementById("continuar").onclick=()=>{
+
+document.getElementById("carta").style.display="none"
+
+document.getElementById("rosa").style.display="block"
+document.getElementById("final").style.display="block"
+
+}
+
+</script>
+
+</body>
+</html>

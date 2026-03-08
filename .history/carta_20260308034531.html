@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Para Renata</title>
+    <style>
+        /* CSS RESET & BASE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #050005;
+            color: #fff;
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* CANVAS PARA PARTÍCULAS */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        /* CAMADAS DE INTERFACE */
+        .layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            opacity: 0;
+            pointer-events: none;
+            text-align: center;
+        }
+
+        .active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ESTILO DA FOTO (ETAPA 2) */
+        .photo-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            border-radius: 15px;
+            border: 3px solid #ff007f;
+            box-shadow: 0 0 20px #ff007f, inset 0 0 10px #ff007f;
+            overflow: hidden;
+            animation: softZoom 5s infinite alternate ease-in-out;
+            margin-bottom: 30px;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .love-text {
+            font-size: 2.5rem;
+            letter-spacing: 8px;
+            color: #fff;
+            text-shadow: 0 0 15px #ff007f, 0 0 30px #ff007f;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes softZoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.08); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* ENVELOPE (ETAPA 3) */
+        .envelope-wrapper {
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: #d4b895; /* Cor de papel envelhecido */
+            position: relative;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #5d4037;
+            font-weight: bold;
+            font-style: italic;
+            border: 1px solid #bc9e7a;
+        }
+
+        .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #c4a47c;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+            z-index: 2;
+        }
+
+        .open-btn {
+            margin-top: 40px;
+            padding: 12px 40px;
+            background: #ff007f;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px #ff007f;
+            cursor: pointer;
+            z-index: 20;
+        }
+
+        /* CARTA (ETAPA 4) */
+        .letter-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            background: #fdf5e6;
+            padding: 40px;
+            border-radius: 2px;
+            color: #2c1e1a;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 1s ease;
+            overflow-y: auto;
+            z-index: 100;
+            border: 1px solid #d3c4a8;
+        }
+
+        .letter-modal.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+
+        .letter-content {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* PÉTALAS */
+        .petal {
+            position: fixed;
+            background-color: #ffb7c5;
+            border-radius: 150% 0 150% 0;
+            z-index: 5;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translate(0, -10%) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translate(100px, 100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* MÚSICA ELEMENTO */
+        #bg-music { display: none; }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="musica.mp3" type="audio/mp3">
+    </audio>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="step2" class="layer">
+        <div class="photo-container">
+            <img src="renata.jpg" alt="Renata">
+        </div>
+        <div class="love-text">EU AMO VOCÊ</div>
+    </div>
+
+    <div id="step3" class="layer">
+        <div class="envelope-wrapper">
+            <div class="envelope">
+                Para Renata
+            </div>
+            <button class="open-btn" onclick="openLetter(event)">OPEN</button>
+        </div>
+    </div>
+
+    <div id="letterModal" class="letter-modal">
+        <div class="letter-content">
+Querida Renata,
+
+Escrevi este pequeno código para te mostrar que, assim como cada linha de instrução aqui presente, meu carinho por você é pensado em cada detalhe.
+
+Você é a pessoa que traz cor para o meu mundo e brilho para os meus dias. Que esta pequena surpresa possa arrancar um sorriso seu hoje.
+
+Com todo o meu amor,
+[Seu Nome]
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const music = document.getElementById('bg-music');
+        
+        let step = 1;
+        let particles = [];
+        let heartParticles = [];
+        let width, height;
+
+        // Ajustar tamanho do canvas
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // Lógica do Coração Matemático
+        function getHeartPoint(t) {
+            let x = 16 * Math.pow(Math.sin(t), 3);
+            let y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+            return { x: x * 10, y: y * 10 }; // Escala do coração
+        }
+
+        // Classe de Partícula
+        class Particle {
+            constructor(x, y, isHeart = false) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 1;
+                this.speedY = (Math.random() - 0.5) * 1;
+                this.isHeart = isHeart;
+                this.alpha = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if(this.alpha > 0.1) this.alpha -= 0.005;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 0, 127, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Criar o coração
+        function initHeart() {
+            for (let i = 0; i < Math.PI * 2; i += 0.1) {
+                let p = getHeartPoint(i);
+                heartParticles.push({
+                    x: p.x + width / 2,
+                    y: p.y + height / 2,
+                    originX: p.x + width / 2,
+                    originY: p.y + height / 2,
+                    angle: i
+                });
+            }
+        }
+        initHeart();
+
+        // Animação Principal
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Fundo brilhante
+            if (Math.random() > 0.9) {
+                particles.push(new Particle(Math.random() * width, Math.random() * height));
+            }
+
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+                if (p.alpha <= 0.1) particles.splice(index, 1);
+            });
+
+            // Desenhar Coração (Etapa 1 e 2)
+            if (step <= 2) {
+                heartParticles.forEach(p => {
+                    ctx.fillStyle = "#ff007f";
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = "#ff007f";
+                    ctx.beginPath();
+                    // Movimento suave do coração
+                    let pulse = Math.sin(Date.now() / 500) * 5;
+                    ctx.arc(p.x + (pulse * Math.cos(p.angle)), p.y + (pulse * Math.sin(p.angle)), 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                });
+            }
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // CONTROLE DE CLIQUES / ESTADOS
+        document.body.addEventListener('click', function() {
+            if (step === 1) {
+                // PRIMEIRO CLIQUE: Tocar música
+                music.play().catch(e => console.log("Aguardando interação para áudio..."));
+                step = 2;
+            } else if (step === 2) {
+                // SEGUNDO CLIQUE: Foto e Eu Amo Você
+                document.getElementById('step2').classList.add('active');
+                step = 3;
+            } else if (step === 3) {
+                // TERCEIRO CLIQUE: Envelope e Pétalas
+                document.getElementById('step2').classList.remove('active');
+                document.getElementById('step2').style.display = 'none';
+                document.getElementById('step3').classList.add('active');
+                startPetals();
+                step = 4;
+            }
+        });
+
+        // Função para chuva de pétalas
+        function startPetals() {
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.classList.add('petal');
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.width = Math.random() * 15 + 10 + 'px';
+                petal.style.height = Math.random() * 15 + 10 + 'px';
+                petal.style.animationDuration = Math.random() * 3 + 2 + 's';
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 5000);
+            }, 300);
+        }
+
+        // Função abrir carta
+        function openLetter(e) {
+            e.stopPropagation(); // Impede o clique de avançar o step do body
+            document.getElementById('letterModal').classList.add('show');
+        }
+    </script>
+</body>
+</html>

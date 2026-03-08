@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Renata</title>
+
+<style>
+
+body{
+margin:0;
+overflow:hidden;
+background:radial-gradient(circle,#2a0015,#000);
+font-family:Georgia,serif;
+color:white;
+text-align:center;
+}
+
+canvas{
+position:absolute;
+top:0;
+left:0;
+}
+
+#foto{
+position:absolute;
+top:40%;
+left:50%;
+transform:translate(-50%,-50%);
+width:75%;
+max-width:320px;
+border-radius:20px;
+border:4px solid #ff3d7a;
+box-shadow:0 0 25px #ff3d7a;
+display:none;
+}
+
+#frase{
+position:absolute;
+top:68%;
+width:100%;
+font-size:28px;
+letter-spacing:6px;
+color:#ff4f87;
+text-shadow:0 0 15px #ff4f87;
+display:none;
+}
+
+#envelope{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:260px;
+height:160px;
+background:#f3e6d0;
+border:4px solid #8b0025;
+border-radius:8px;
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+color:#5a0015;
+font-weight:bold;
+}
+
+#open{
+margin-top:10px;
+background:#8b0025;
+color:white;
+padding:8px 18px;
+border-radius:20px;
+cursor:pointer;
+}
+
+#carta{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:85%;
+height:65%;
+background:#f8f1e6;
+color:#3a2c2c;
+padding:25px;
+display:none;
+font-style:italic;
+box-shadow:0 0 40px rgba(0,0,0,0.6);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="c"></canvas>
+
+<img src="renata.jpg" id="foto">
+<div id="frase">EU AMO VOCÊ</div>
+
+<div id="envelope">
+Uma carta para você
+<div id="open">OPEN</div>
+</div>
+
+<div id="carta">
+Aqui vai aparecer a carta que você vai escrever depois.
+</div>
+
+<audio id="musica" src="Lana-Del-Rey.mp3"></audio>
+
+<script>
+
+const canvas=document.getElementById("c")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let particles=[]
+
+function createHeart(){
+
+particles=[]
+
+for(let i=0;i<700;i++){
+
+let t=Math.random()*Math.PI*2
+
+let x=16*Math.pow(Math.sin(t),3)
+let y=13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)
+
+particles.push({
+x:canvas.width/2+x*10,
+y:canvas.height/2-y*10,
+vx:(Math.random()-0.5)*0.4,
+vy:(Math.random()-0.5)*0.4
+})
+
+}
+
+}
+
+createHeart()
+
+function animate(){
+
+ctx.fillStyle="rgba(0,0,0,0.25)"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+ctx.fillStyle="#ff2b6a"
+
+particles.forEach(p=>{
+
+p.x+=p.vx
+p.y+=p.vy
+
+ctx.beginPath()
+ctx.arc(p.x,p.y,2,0,Math.PI*2)
+ctx.fill()
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+let stage=0
+
+document.body.addEventListener("click",()=>{
+
+if(stage===0){
+
+document.getElementById("musica").play()
+stage=1
+
+}
+
+else if(stage===1){
+
+document.getElementById("foto").style.display="block"
+document.getElementById("frase").style.display="block"
+
+stage=2
+
+}
+
+else if(stage===2){
+
+startPetals()
+
+document.getElementById("foto").style.display="none"
+document.getElementById("frase").style.display="none"
+
+document.getElementById("envelope").style.display="flex"
+
+stage=3
+
+}
+
+})
+
+function startPetals(){
+
+setInterval(()=>{
+
+let p=document.createElement("div")
+
+p.innerHTML="🌸"
+
+p.style.position="absolute"
+p.style.left=Math.random()*window.innerWidth+"px"
+p.style.top="-20px"
+p.style.fontSize="22px"
+
+document.body.appendChild(p)
+
+let fall=setInterval(()=>{
+
+p.style.top=(p.offsetTop+2)+"px"
+
+if(p.offsetTop>window.innerHeight){
+
+clearInterval(fall)
+p.remove()
+
+}
+
+},20)
+
+},200)
+
+}
+
+document.getElementById("open").onclick=()=>{
+
+document.getElementById("envelope").style.display="none"
+document.getElementById("carta").style.display="block"
+
+}
+
+</script>
+
+</body>
+</html>

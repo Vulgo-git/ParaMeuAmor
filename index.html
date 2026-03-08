@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Renata</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --gold: #d4af37; --wine: #4a0e0e; --red-petal: #ff1a1a; --text-pink: #b12f2f; --bg-gradient1: #110000; --bg-gradient2: #330000; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:linear-gradient(to bottom, var(--bg-gradient1), var(--bg-gradient2)); font-family:'Cinzel', serif; overflow:hidden; height:100vh; color:#fff; }
+
+canvas { position:fixed; top:0; left:0; z-index:1; pointer-events:none; }
+
+.layer {
+  position:absolute; width:100%; height:100%; z-index:10;
+  display:flex; flex-direction:column; justify-content:center;
+  align-items:center; transition:opacity 1s ease; opacity:0; pointer-events:none;
+  text-align:center;
+}
+.active { opacity:1; pointer-events:auto; }
+
+.parchment {
+  width:90%; max-width:400px; aspect-ratio:3/4;
+  padding:50px 30px; display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  background-size:contain; background-repeat:no-repeat;
+  font-family:'Dancing Script', cursive; color:#fff;
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
+}
+.clara { background-image:url('folha_clara.png'); color:#2c1e1a; }
+.preta { background-image:url('folha_preta.png'); color:#fff; }
+
+.text-box { font-size:1.3rem; line-height:1.5; min-height:150px; width:100%; }
+
+.btn-container { display:flex; gap:15px; margin-top:25px; justify-content:center; width:100%; }
+.btn-ui {
+  background:var(--wine); color:var(--gold); border:1px solid var(--gold);
+  padding:12px 20px; cursor:pointer; border-radius:8px;
+  font-family:'Cinzel', serif; font-size:0.9rem; transition:0.3s;
+}
+.btn-ui:hover { transform:scale(1.1); background:#631414; }
+
+#open-btn {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:80px; height:80px; border-radius:50%; border:none; cursor:pointer;
+  background:#b12f2f; color:#fff; font-weight:bold; font-size:1rem;
+  box-shadow:0 0 20px #b12f2f; z-index:5;
+}
+
+.rosa-final { font-size:90px; animation:rotateVertical 6s infinite linear; }
+@keyframes rotateVertical { from { transform:rotateY(0deg);} to { transform:rotateY(360deg);} }
+
+</style>
+</head>
+<body onclick="handleGlobalClick()">
+
+<audio id="musica" loop>
+  <source src="Lana-Del-Rey.mp3" type="audio/mp3">
+</audio>
+
+<canvas id="mainCanvas"></canvas>
+
+<!-- STEP 1: CORAÇÃO -->
+<div id="step1" class="layer"></div>
+
+<!-- STEP 2: FOTO -->
+<div id="step2" class="layer">
+  <img src="renata.jpg" style="width:250px; border-radius:15px; border:2px solid var(--text-pink); box-shadow:0 0 30px var(--text-pink);">
+  <h1 style="margin-top:20px; color:var(--text-pink); font-size:1.8rem;">EU AMO VOCÊ</h1>
+</div>
+
+<!-- STEP 3: ENVELOPE -->
+<div id="step3" class="layer">
+  <img src="envelope.png" id="envelope" style="width:280px;">
+  <button id="open-btn" onclick="openLetter(event)">OPEN</button>
+</div>
+
+<!-- STEP 4: FOLHA CLARA -->
+<div id="step4" class="layer">
+  <div class="parchment clara">
+    <div id="typewriter1" class="text-box"></div>
+    <div id="btns-texto1" class="btn-container" style="display:none;">
+      <button class="btn-ui" onclick="showPassInput(event)">SÓ PARA VOCÊ</button>
+      <button class="btn-ui" onclick="goFinal(event)">CONTINUE ❤️</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5: FOLHA PRETA (Texto Secreto) -->
+<div id="step5" class="layer">
+  <div class="parchment preta">
+    <div id="typewriter2" class="text-box"></div>
+    <button class="btn-ui" style="margin-top:20px" onclick="goFinal(event)">VOLTAR</button>
+  </div>
+</div>
+
+<!-- STEP 6: ROSA FINAL -->
+<div id="step6" class="layer">
+  <div class="rosa-final">🌹</div>
+  <h1 style="color:var(--text-pink); margin-top:20px;">TE AMO</h1>
+  <h2 style="color:var(--gold); margin-top:10px;">FELIZ DIA DAS MULHERES</h2>
+</div>
+
+<!-- PASSWORD SCREEN -->
+<div id="password-screen" class="layer">
+  <h2 style="color:var(--gold); margin-bottom:20px;">Digite o Código</h2>
+  <input type="password" id="pass-input" maxlength="4" placeholder="****" oninput="checkPass(this)">
+</div>
+
+<script>
+const canvas=document.getElementById('mainCanvas');
+const ctx=canvas.getContext('2d');
+let stage=0;
+let particles=[];
+
+const texto1 = `Meu amor,
+
+Eu fiz isso só para você.
+
+Talvez seja algo simples,
+mas foi feito pensando em você em cada detalhe.
+
+Desde que você entrou na minha vida,
+tudo ficou mais bonito.
+
+Você é a minha pessoa preferida, eu passo meus dias inteiros pensando em vc e nos seus detalhes que me marcam tanto, até a coisa mais boba na sua visão é algo que eu amo em você.
+
+Com você tudo é mais especial, nossas conversas bobas, até mesmo quando estamos apenas em silêncio em uma simples conversa.
+
+Eu amo os detalhes que compõem o seu ser, eu amo o seu jeito, suas manias, até mesmo amo quando você está brava e brigando comigo, seu jeito é algo único nesse mundo kkkkk você é extremamente apaixonante.
+
+Eu amo sua inteligência e sua visão de mundo.. É lindo ver você falando sobre um simples livro que você lê, uma série, ou até mesmo um episódio de algum programa, eu simplesmente passaria horas, ou melhor dizendo o dia inteiro, só escutando você, ouvindo sua voz que é tão linda que, combinada com esse seu sotaque, é algo que eu amo tanto de todo meu coração.
+
+Eu admiro muito a mulher que você se tornou, todas as coisas que você passou na sua vida até agora, suas lutas e batalhas, sejam mentais ou físicas. Eu admiro como você enfrentou cada dificuldade até hoje e continua correndo atrás de seus sonhos, seja mudando de cidade em cidade ou até mesmo ficando longe de seus pais, isso mostra como você é forte e eu tenho certeza que o seu futuro será brilhante e que realizará seus sonhos.
+
+Não sou ninguém para falar isso, mas eu tenho muito orgulho de você, te conheço há muito tempo e vi as etapas que você foi passando e enfrentando.
+
+Continue sendo essa garota risonha, porque é maravilhoso escutar sua risada, eu realmente amo cada coisinha em você kkkkk, não desista e nunca pare de correr atrás de suas coisas, dificuldades e momentos ruins acontecem, tenho certeza que isso logo acabará e você vai viver feliz.`;
+
+const texto2 = `Agora vou abrir um pouco meu coração..
+
+Minha princesa, eu sei que estamos longe um do outro, literalmente uma das coisas que mais me machucam todos os dias, eu ultimamente sou uma pessoa triste por estar longe de você, eu sei que você me entende, e dói muito não poder sentir você ou algo simples que é olhar em seus olhos, o que eu vou falar agora pode ser egoísta, mas o que eu mais anseio é poder estar e viver com você nesse momento, a dor de não poder ser seu apoio em suas dificuldades, não conseguir te dar no mínimo um colo em seus momentos tristes me machuca todos os dias, me deixa triste ver você passando por essas situações merdas e não poder te dar um simples abraço, amor eu te amo tanto, em breve se Deus quiser vamos estar juntos e planejando nosso futuro, eu quero viver com você sempre, eu preciso de você, eu quero cuidar de você, quero ser o seu porto seguro em seus momentos frágeis, quero ser a pessoa que vai beijar e ajudar a cicatrizar e curar tudo o que te machuca, eu quero te fazer a mulher mais feliz desse mundo.
+
+Eu te amo muito minha garota inefável, eu te amo de todo o meu coração 🌹❤️;
+
+Você é a mulher mais linda desse mundo, eu amo seu cabelo, eu amo sua boca, eu amo seu narizinho maravilhoso, amo seus olhos, amo demais esse pescoço lindo kkkkk, sua cinturinha maravilhosa e esse copitcho que me deixa com vontade de morder, você é muito gostosa, perfeita, eu quero você toda, você é meu tesão, eu te quero muito.
+
+Enfim, feliz Dia das Mulheres meu amor, eu te amo muito muito muito.`;
+
+function init(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+init();
+
+function drawHeart(scale,color,rot){
+  ctx.save();
+  ctx.translate(canvas.width/2,canvas.height/2);
+  ctx.rotate(rot);
+  ctx.beginPath();
+  ctx.strokeStyle=color;
+  ctx.shadowBlur=20; ctx.shadowColor=color;
+  for(let t=0;t<=Math.PI*2;t+=0.05){
+    let x=16*Math.pow(Math.sin(t),3);
+    let y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t));
+    ctx.lineTo(x*scale,y*scale);
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawPetals(){
+  if(stage>=2 && Math.random()>0.85){particles.push({x:Math.random()*canvas.width,y:-20,s:Math.random()*6+2,sp:Math.random()*1.5+1});}
+  particles.forEach((p,i)=>{p.y+=p.sp; ctx.fillStyle="var(--red-petal)"; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.s,p.s/2,Math.PI/4,0,Math.PI*2); ctx.fill(); if(p.y>canvas.height) particles.splice(i,1);});
+}
+
+function animate(){
+  ctx.fillStyle="rgba(17,0,0,0.15)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const time=Date.now()*0.002;
+  if(stage===0) drawHeart(10+Math.sin(time)*2,"#fff",time);
+  if(stage===1) drawHeart(20,"var(--text-pink)",time);
+  drawPetals();
+  requestAnimationFrame(animate);
+}
+animate();
+
+function handleGlobalClick(){
+  if(stage===0){document.getElementById('musica').play(); document.getElementById('step1').classList.add('active'); stage=1;}
+  else if(stage===1){document.getElementById('step1').classList.remove('active'); document.getElementById('step2').classList.add('active'); stage=2;}
+}
+
+function openLetter(e){
+  e.stopPropagation();
+  document.getElementById('step3').classList.remove('active');
+  document.getElementById('step4').classList.add('active');
+  stage=3;
+  typeWrite('typewriter1',texto1,()=>{document.getElementById('btns-texto1').style.display='flex';});
+}
+
+function typeWrite(id,txt,cb){let i=0; const el=document.getElementById(id); el.innerHTML=""; const timer=setInterval(()=>{el.innerHTML+=txt.charAt(i); i++; if(i>=txt.length){clearInterval(timer); if(cb) cb();}},50);}
+
+function showPassInput(e){e.stopPropagation(); document.getElementById('password-screen').classList.add('active');}
+
+function checkPass(el){if(el.value==="0312"){document.getElementById('password-screen').classList.remove('active'); document.getElementById('step4').classList.remove('active'); document.getElementById('step5').classList.add('active'); typeWrite('typewriter2',texto2);}}
+
+function goFinal(e){e.stopPropagation(); document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active')); document.getElementById('step6').classList.add('active'); stage=6;}
+
+window.addEventListener('resize',init);
+</script>
+</body>
+</html>

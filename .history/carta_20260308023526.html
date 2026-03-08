@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>💗 Minha Carta de Amor - Dia das Mulheres 💗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #instrucao {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 20px;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff1493;
+            z-index: 20;
+            animation: pulse 1.5s infinite;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 30px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,105,180,0.5);
+            pointer-events: none;
+            font-family: 'Arial', sans-serif;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.05); text-shadow: 0 0 20px #ff1493, 0 0 40px #ff69b4; }
+            100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+        }
+
+        .carta-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .carta-overlay.visivel {
+            pointer-events: auto;
+            opacity: 1;
+        }
+
+        .carta-container {
+            width: 700px;
+            max-width: 90%;
+            background: transparent;
+            position: relative;
+            transform: scale(0.9);
+            animation: aparecerCarta 1.5s ease forwards;
+        }
+
+        @keyframes aparecerCarta {
+            0% { transform: scale(0.5) translateY(100px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .carta-antiga {
+            background: #f4e4c1;
+            padding: 40px;
+            border-radius: 20px 20px 20px 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 2px #8b4513, 0 0 0 5px #d2b48c;
+            position: relative;
+            color: #5d3a1a;
+            border: 15px solid transparent;
+            border-image: repeating-linear-gradient(45deg, #8b4513, #d2691e 10px, #8b4513 20px) 30;
+            transform: rotate(0.5deg);
+        }
+
+        .borda-queimada {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border-radius: 25px;
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.3);
+            pointer-events: none;
+        }
+
+        .borda-queimada::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: radial-gradient(circle at 20% 30%, rgba(139,69,19,0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(139,69,19,0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 10% 80%, rgba(210,105,30,0.4) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 20%, rgba(210,105,30,0.4) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .selo {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 80px;
+            height: 80px;
+            background: #d4af37;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #4a2c1a;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 0 3px #f4e4c1, 0 0 0 6px #b8860b;
+            transform: rotate(15deg);
+            z-index: 40;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: brilhaSelo 2s infinite alternate;
+        }
+
+        @keyframes brilhaSelo {
+            from { box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 0 3px #f4e4c1, 0 0 0 6px #b8860b, 0 0 20px #ffd700; }
+            to { box-shadow: 0 5px 25px rgba(0,0,0,0.7), 0 0 0 3px #f4e4c1, 0 0 0 6px #daa520, 0 0 40px #ffaa00; }
+        }
+
+        .selo:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .selo span {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .conteudo-carta {
+            position: relative;
+            z-index: 10;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: #8b4513 #f4e4c1;
+        }
+
+        .conteudo-carta::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .conteudo-carta::-webkit-scrollbar-track {
+            background: #f4e4c1;
+        }
+
+        .conteudo-carta::-webkit-scrollbar-thumb {
+            background: #8b4513;
+            border-radius: 10px;
+        }
+
+        .texto-escrevendo {
+            font-family: 'Dancing Script', 'Brush Script MT', cursive;
+            font-size: 28px;
+            line-height: 1.6;
+            color: #5d3a1a;
+            text-shadow: 1px 1px 0 rgba(255,255,200,0.3);
+            white-space: pre-wrap;
+            min-height: 300px;
+        }
+
+        .texto-escrevendo strong {
+            font-size: 32px;
+            color: #8b4513;
+        }
+
+        .texto-secreto {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px dashed #b8860b;
+            text-align: center;
+        }
+
+        .btn-secreto {
+            background: linear-gradient(145deg, #8b4513, #5d3a1a);
+            color: #f4e4c1;
+            border: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 0 2px #d4af37;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .btn-secreto:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.7), 0 0 0 3px #ffd700;
+        }
+
+        .mensagem-secreta {
+            background: rgba(0,0,0,0.2);
+            padding: 30px;
+            border-radius: 15px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 24px;
+            color: #4a0f0f;
+            border: 1px solid #b8860b;
+            display: none;
+            backdrop-filter: blur(2px);
+            margin-top: 20px;
+        }
+
+        .mensagem-secreta.visivel {
+            display: block;
+            animation: revelar 1s ease;
+        }
+
+        @keyframes revelar {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .rosa-final-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            background: radial-gradient(circle at center, #0a0a2a, #000);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+        }
+
+        .rosa-final-container.visivel {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .rosa-girando {
+            width: 300px;
+            height: 300px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,20 C30,10 10,30 20,50 C25,60 40,70 50,80 C60,70 75,60 80,50 C90,30 70,10 50,20 Z" fill="%23e63946" opacity="0.9"/><path d="M50,30 C40,25 25,35 30,48 C33,55 40,60 50,68 C60,60 67,55 70,48 C75,35 60,25 50,30 Z" fill="%23ff0000"/><circle cx="45" cy="40" r="3" fill="%23ffcc00"/><circle cx="55" cy="40" r="3" fill="%23ffcc00"/><path d="M45 55 Q50 65 55 55" stroke="%23ff69b4" stroke-width="2" fill="none"/></svg>');
+            background-size: contain;
+            animation: girarRosa 20s infinite linear;
+            filter: drop-shadow(0 0 50px #ff3366);
+        }
+
+        @keyframes girarRosa {
+            0% { transform: rotateY(0deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.1); }
+            100% { transform: rotateY(360deg) scale(1); }
+        }
+
+        .frase-final {
+            margin-top: 50px;
+            text-align: center;
+            color: white;
+            font-size: 48px;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 0 0 20px #ff69b4, 0 0 40px #ff1493;
+            opacity: 0;
+            animation: aparecerFrase 2s 2s forwards;
+        }
+
+        .frase-final small {
+            display: block;
+            font-size: 36px;
+            margin-top: 30px;
+            color: #ffb6c1;
+            text-shadow: 0 0 15px #ff1493;
+        }
+
+        @keyframes aparecerFrase {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(30px); }
+        }
+
+        .som-cards {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+            display: flex;
+            gap: 10px;
+        }
+
+        .som-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border: 2px solid #ff69b4;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .som-btn:hover {
+            background: #ff69b4;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <canvas id="canvas"></canvas>
+        
+        <div id="instrucao">💗 Clique para começar a magia 💗</div>
+        
+        <div class="carta-overlay" id="cartaOverlay">
+            <div class="carta-container">
+                <div class="carta-antiga">
+                    <div class="borda-queimada"></div>
+                    <div class="selo" id="seloOpen">
+                        <span>💌</span>
+                        OPEN
+                    </div>
+                    <div class="conteudo-carta" id="conteudoCarta">
+                        <div class="texto-escrevendo" id="textoEscrevendo"></div>
+                        
+                        <div class="texto-secreto">
+                            <button class="btn-secreto" id="btnSecreto">🔒 Só pra ela</button>
+                            <div class="mensagem-secreta" id="mensagemSecreta">
+                                <p>Meu amor,</p>
+                                <p>Essa parte é só sua. Aqui vai o segredo que só você pode saber...</p>
+                                <p>💗 Eu te amo além do que os olhos podem ver. 💗</p>
+                                <p><em>Com todo meu coração,</em></p>
+                                <p><strong>[Seu nome]</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rosa-final-container" id="rosaFinal">
+            <div class="rosa-girando"></div>
+            <div class="frase-final" id="fraseFinal">
+                <div id="euTeAmo"></div>
+                <small id="felizDia"></small>
+            </div>
+        </div>
+        
+        <div class="som-cards">
+            <div class="som-btn" id="toggleMusica">🎵</div>
+            <div class="som-btn" id="toggleCoração">💓</div>
+        </div>
+    </div>
+
+    <script>
+        // ===========================================
+        // CONFIGURAÇÕES - VOCÊ MUDA AQUI!
+        // ===========================================
+        const config = {
+            // 📸 NOME DA FOTO DELA (coloque na mesma pasta)
+            foto: 'minha-musa.jpg',  // 👉 MUDE AQUI!
+            
+            // 🎵 NOME DA MÚSICA MP3 (coloque na mesma pasta)
+            musica: 'musica.mp3',    // 👉 MUDE AQUI!
+            
+            // 💘 TEXTOS DA CARTA
+            textoPrincipal: `Meu amor,
+
+Desde que você entrou na minha vida, tudo ganhou cor. Seu olhar é a luz que me guia, seu sorriso é a razão dos meus dias.
+
+Cada momento ao seu lado é um presente. Você é mais do que eu poderia sonhar, é real, é minha, é nós.
+
+Hoje, no Dia das Mulheres, quero celebrar a mulher incrível que você é. Forte, doce, inteligente, apaixonante.
+
+Te amo hoje, amanhã e sempre.
+
+Com todo meu amor,
+[Seu nome] 💗`,
+            
+            // 🤫 TEXTO SECRETO (SÓ PRA ELA)
+            textoSecreto: `Meu amor,
+
+Agora que estamos só nós dois... quero te dizer que você é a dona do meu coração. Seu cheiro, seu toque, sua voz... tudo em você me encanta.
+
+Guarda esse segredo com você: você é a pessoa mais especial da minha vida. 💕
+
+Te amo infinitamente.
+[Seu nome]`,
+            
+            // 💞 NOME PARA ASSINAR
+            seuNome: 'Seu nome aqui',
+            
+            // ⚡ VELOCIDADE DA ESCRITA (milissegundos)
+            velocidadeDigitacao: 50,  // 50ms = rápido
+        };
+
+        // ===========================================
+        // VARIÁVEIS GLOBAIS
+        // ===========================================
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('container');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Áudios
+        const musica = new Audio();
+        musica.loop = true;
+        musica.volume = 0.3;
+        
+        const coracaoSom = new Audio();
+        coracaoSom.src = 'data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVAAAAA8AHgAzAEIAkgCjALQAxADUAOUA9QEFARUBFQEVARUBFQEVAQ=='; // Beep simples
+        coracaoSom.loop = true;
+        coracaoSom.volume = 0.2;
+
+        // Controle de estágios
+        let estagio = 0;
+        let particulas = [];
+        let animationId = null;
+        
+        // Partículas para o olhar
+        let particulasOlhar = [];
+        const imagemOlhar = new Image();
+        
+        // Tentar carregar a foto
+        imagemOlhar.src = config.foto;
+        imagemOlhar.crossOrigin = 'anonymous';
+        
+        imagemOlhar.onload = function() {
+            console.log('✅ Foto carregada! Processando...');
+            processarImagem();
+        };
+        
+        imagemOlhar.onerror = function() {
+            console.log('⚠️ Foto não encontrada. Usando efeito padrão.');
+            // Cria partículas padrão se não tiver foto
+            for (let i = 0; i < 1000; i++) {
+                particulasOlhar.push({
+                    targetX: canvas.width/2 + (Math.random() - 0.5) * 200,
+                    targetY: canvas.height/2 + (Math.random() - 0.5) * 200,
+                    currentX: Math.random() * canvas.width,
+                    currentY: Math.random() * canvas.height,
+                    cor: `rgba(255, ${150 + Math.random()*105}, 180, 0.7)`,
+                    tamanho: 2 + Math.random() * 4
+                });
+            }
+        };
+
+        function processarImagem() {
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            const maxWidth = 300;
+            const scale = maxWidth / imagemOlhar.width;
+            tempCanvas.width = maxWidth;
+            tempCanvas.height = imagemOlhar.height * scale;
+            
+            tempCtx.drawImage(imagemOlhar, 0, 0, tempCanvas.width, tempCanvas.height);
+            
+            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+            const data = imageData.data;
+            
+            particulasOlhar = [];
+            for (let y = 0; y < tempCanvas.height; y += 2) {
+                for (let x = 0; x < tempCanvas.width; x += 2) {
+                    const index = (y * tempCanvas.width + x) * 4;
+                    const r = data[index];
+                    const g = data[index + 1];
+                    const b = data[index + 2];
+                    
+                    const brilho = (r + g + b) / 3;
+                    
+                    if (brilho > 30 && brilho < 220) {
+                        particulasOlhar.push({
+                            targetX: (x - tempCanvas.width/2) * 2 + canvas.width/2,
+                            targetY: (y - tempCanvas.height/2) * 2 + canvas.height/2 - 50,
+                            currentX: Math.random() * canvas.width,
+                            currentY: Math.random() * canvas.height,
+                            cor: `rgba(255, ${150 + Math.random()*105}, 180, ${0.4 + Math.random()*0.4})`,
+                            tamanho: 2 + Math.random() * 3
+                        });
+                    }
+                }
+            }
+            console.log(`✅ ${particulasOlhar.length} partículas criadas a partir da foto!`);
+        }
+
+        // ===========================================
+        // PARTÍCULAS DO CORAÇÃO
+        // ===========================================
+        function criarParticulasCoracao() {
+            const particulas = [];
+            const pontos = 1500;
+            
+            for (let i = 0; i < pontos; i++) {
+                const t = Math.random() * Math.PI * 2;
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                
+                particulas.push({
+                    targetX: (x * 20) + canvas.width/2,
+                    targetY: (y * -20) + canvas.height/2,
+                    currentX: Math.random() * canvas.width,
+                    currentY: Math.random() * canvas.height,
+                    cor: `rgba(255, 105, 180, ${0.5 + Math.random()*0.5})`,
+                    tamanho: 2 + Math.random() * 4,
+                    velocidade: 0.02 + Math.random() * 0.02
+                });
+            }
+            return particulas;
+        }
+
+        // ===========================================
+        // PARTÍCULAS DA FRASE
+        // ===========================================
+        function criarParticulasFrase(frase) {
+            const particulas = [];
+            const canvasTemp = document.createElement('canvas');
+            const ctxTemp = canvasTemp.getContext('2d');
+            
+            canvasTemp.width = 600;
+            canvasTemp.height = 150;
+            
+            ctxTemp.font = 'bold 70px Arial';
+            ctxTemp.fillStyle = 'white';
+            ctxTemp.textAlign = 'center';
+            ctxTemp.fillText(frase, canvasTemp.width/2, canvasTemp.height/2);
+            
+            const imageData = ctxTemp.getImageData(0, 0, canvasTemp.width, canvasTemp.height);
+            const data = imageData.data;
+            
+            for (let y = 0; y < canvasTemp.height; y += 4) {
+                for (let x = 0; x < canvasTemp.width; x += 4) {
+                    const index = (y * canvasTemp.width + x) * 4;
+                    if (data[index] > 128) {
+                        particulas.push({
+                            targetX: (x - canvasTemp.width/2) + canvas.width/2,
+                            targetY: (y - canvasTemp.height/2) + canvas.height/2 - 30,
+                            currentX: Math.random() * canvas.width,
+                            currentY: Math.random() * canvas.height,
+                            cor: `rgba(255, 105, 180, 0.9)`,
+                            tamanho: 3,
+                            velocidade: 0.03
+                        });
+                    }
+                }
+            }
+            return particulas;
+        }
+
+        // ===========================================
+        // CHUVA DE PÉTALAS
+        // ===========================================
+        let petalas = [];
+        function criarPetalas() {
+            for (let i = 0; i < 200; i++) {
+                petalas.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    tamanho: 10 + Math.random() * 20,
+                    velocidadeY: 1 + Math.random() * 3,
+                    velocidadeX: (Math.random() - 0.5) * 0.5,
+                    rotacao: Math.random() * Math.PI * 2,
+                    cor: `rgba(230, 57, 70, ${0.4 + Math.random()*0.3})`
+                });
+            }
+        }
+
+        // ===========================================
+        // FOGO REALISTA
+        // ===========================================
+        let chamas = [];
+        function criarFogo() {
+            for (let i = 0; i < 150; i++) {
+                chamas.push({
+                    x: canvas.width/2 + (Math.random() - 0.5) * 200,
+                    y: canvas.height/2 + 50,
+                    tamanho: 10 + Math.random() * 30,
+                    velocidadeY: -1 - Math.random() * 3,
+                    velocidadeX: (Math.random() - 0.5) * 0.5,
+                    cor: `rgba(255, ${100 + Math.random()*100}, 0, ${0.6 + Math.random()*0.3})`,
+                    vida: 1
+                });
+            }
+        }
+
+        // ===========================================
+        // ANIMAÇÃO PRINCIPAL
+        // ===========================================
+        function animar() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Desenha partículas do estágio atual
+            if (particulas.length > 0) {
+                particulas.forEach(p => {
+                    p.currentX += (p.targetX - p.currentX) * (p.velocidade || 0.02);
+                    p.currentY += (p.targetY - p.currentY) * (p.velocidade || 0.02);
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.currentX, p.currentY, p.tamanho, 0, Math.PI * 2);
+                    
+                    const gradient = ctx.createRadialGradient(
+                        p.currentX, p.currentY, 0,
+                        p.currentX, p.currentY, p.tamanho * 3
+                    );
+                    gradient.addColorStop(0, p.cor || '#ff69b4');
+                    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+                });
+            }
+            
+            // Desenha pétalas se necessário
+            if (estagio >= 4) {
+                petalas.forEach(p => {
+                    p.y += p.velocidadeY;
+                    p.x += p.velocidadeX;
+                    p.rotacao += 0.01;
+                    
+                    if (p.y > canvas.height) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate(p.rotacao);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.quadraticCurveTo(p.tamanho/2, -p.tamanho/2, p.tamanho, 0);
+                    ctx.quadraticCurveTo(p.tamanho/2, p.tamanho/2, 0, 0);
+                    ctx.fillStyle = p.cor;
+                    ctx.fill();
+                    ctx.restore();
+                });
+            }
+            
+            // Desenha fogo se necessário
+            if (estagio >= 5) {
+                chamas.forEach((c, index) => {
+                    c.y += c.velocidadeY;
+                    c.x += c.velocidadeX;
+                    c.vida -= 0.005;
+                    
+                    if (c.vida <= 0 || c.y < 0) {
+                        chamas[index] = {
+                            x: canvas.width/2 + (Math.random() - 0.5) * 200,
+                            y: canvas.height/2 + 50,
+                            tamanho: 10 + Math.random() * 30,
+                            velocidadeY: -1 - Math.random() * 3,
+                            velocidadeX: (Math.random() - 0.5) * 0.5,
+                            cor: `rgba(255, ${100 + Math.random()*100}, 0, ${0.6 + Math.random()*0.3})`,
+                            vida: 1
+                        };
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(c.x, c.y, c.tamanho * c.vida, 0, Math.PI * 2);
+                    
+                    const gradient = ctx.createRadialGradient(
+                        c.x, c.y, 0,
+                        c.x, c.y, c.tamanho * c.vida * 2
+                    );
+                    gradient.addColorStop(0, `rgba(255, 255, 200, ${c.vida})`);
+                    gradient.addColorStop(0.4, `rgba(255, 150, 0, ${c.vida})`);
+                    gradient.addColorStop(1, 'rgba(255, 0, 0, 0)');
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.fill();
+                });
+            }
+            
+            animationId = requestAnimationFrame(animar);
+        }
+
+        // ===========================================
+        // CONTROLE DE CLIQUE
+        // ===========================================
+        let textoDigitado = '';
+        let digitando = false;
+        let charIndex = 0;
+        
+        container.addEventListener('click', (e) => {
+            if (e.target.closest('.selo') || e.target.closest('.btn-secreto') || e.target.closest('.som-btn')) {
+                return;
+            }
+            
+            estagio++;
+            
+            // Atualiza instrução
+            const instrucao = document.getElementById('instrucao');
+            
+            switch(estagio) {
+                case 1:
+                    particulas = criarParticulasCoracao();
+                    instrucao.innerHTML = '💗 Coração de luz 💗';
+                    break;
+                    
+                case 2:
+                    if (particulasOlhar.length > 0) {
+                        particulas = particulasOlhar;
+                    }
+                    instrucao.innerHTML = '✨ Seu olhar ✨';
+                    break;
+                    
+                case 3:
+                    particulas = criarParticulasFrase('EU AMO VOCÊ');
+                    instrucao.innerHTML = '💘 Eu amo você 💘';
+                    break;
+                    
+                case 4:
+                    particulas = [];
+                    criarPetalas();
+                    instrucao.innerHTML = '🌹 Chuva de pétalas 🌹';
+                    break;
+                    
+                case 5:
+                    criarFogo();
+                    instrucao.innerHTML = '🔥 O fogo do amor 🔥';
+                    break;
+                    
+                case 6:
+                    petalas = [];
+                    chamas = [];
+                    document.getElementById('cartaOverlay').classList.add('visivel');
+                    instrucao.style.opacity = '0';
+                    break;
+            }
+        });
+
+        // ===========================================
+        // ABRIR CARTA E DIGITAR TEXTO
+        // ===========================================
+        document.getElementById('seloOpen').addEventListener('click', function() {
+            const textoElemento = document.getElementById('textoEscrevendo');
+            const textoCompleto = config.textoPrincipal.replace('[Seu nome]', config.seuNome);
+            
+            if (!digitando) {
+                digitando = true;
+                charIndex = 0;
+                textoElemento.innerHTML = '';
+                
+                function digitar() {
+                    if (charIndex < textoCompleto.length) {
+                        textoElemento.innerHTML += textoCompleto[charIndex];
+                        charIndex++;
+                        setTimeout(digitar, config.velocidadeDigitacao);
+                    } else {
+                        digitando = false;
+                    }
+                }
+                
+                digitar();
+            }
+        });
+
+        // ===========================================
+        // TEXTO SECRETO
+        // ===========================================
+        document.getElementById('btnSecreto').addEventListener('click', function() {
+            const msgSecreta = document.getElementById('mensagemSecreta');
+            msgSecreta.classList.toggle('visivel');
+            
+            if (msgSecreta.classList.contains('visivel')) {
+                msgSecreta.innerHTML = config.textoSecreto.replace('[Seu nome]', config.seuNome);
+                this.innerHTML = '🤍 Guardar no coração';
+            } else {
+                this.innerHTML = '🔒 Só pra ela';
+            }
+        });
+
+        // ===========================================
+        // ROSA FINAL
+        // ===========================================
+        function mostrarRosaFinal() {
+            const rosaContainer = document.getElementById('rosaFinal');
+            const euTeAmo = document.getElementById('euTeAmo');
+            const felizDia = document.getElementById('felizDia');
+            
+            rosaContainer.classList.add('visivel');
+            
+            // Animação do "Eu te amo"
+            const textoAmor = 'Eu te amo.';
+            let i = 0;
+            const intervaloAmor = setInterval(() => {
+                if (i < textoAmor.length) {
+                    euTeAmo.innerHTML += textoAmor[i];
+                    i++;
+                } else {
+                    clearInterval(intervaloAmor);
+                    
+                    // Depois mostra "Feliz Dia das Mulheres"
+                    setTimeout(() => {
+                        const textoDia = 'Feliz Dia das Mulheres';
+                        let j = 0;
+                        const intervaloDia = setInterval(() => {
+                            if (j < textoDia.length) {
+                                felizDia.innerHTML += textoDia[j];
+                                j++;
+                            } else {
+                                clearInterval(intervaloDia);
+                            }
+                        }, 80);
+                    }, 1000);
+                }
+            }, 100);
+        }
+
+        // Quando a carta for fechada (último clique fora)
+        container.addEventListener('click', function final(e) {
+            if (document.getElementById('cartaOverlay').classList.contains('visivel') && 
+                !e.target.closest('.carta-container')) {
+                document.getElementById('cartaOverlay').classList.remove('visivel');
+                document.getElementById('instrucao').style.opacity = '1';
+                document.getElementById('instrucao').innerHTML = '🌹 Clique para o final 🌹';
+                
+                // Último clique mostra rosa final
+                setTimeout(() => {
+                    container.addEventListener('click', function ultimo() {
+                        mostrarRosaFinal();
+                        container.removeEventListener('click', ultimo);
+                    }, { once: true });
+                }, 500);
+            }
+        });
+
+        // ===========================================
+        // CONTROLE DE SOM
+        // ===========================================
+        let musicaTocando = false;
+        let coracaoTocando = false;
+        
+        document.getElementById('toggleMusica').addEventListener('click', function() {
+            if (!musicaTocando) {
+                musica.src = config.musica;
+                musica.play().catch(e => {
+                    alert('Clique na tela primeiro para ativar a música (regra do navegador)');
+                });
+                this.style.background = '#ff69b4';
+                musicaTocando = true;
+            } else {
+                musica.pause();
+                this.style.background = 'rgba(255,255,255,0.2)';
+                musicaTocando = false;
+            }
+        });
+        
+        document.getElementById('toggleCoração').addEventListener('click', function() {
+            if (!coracaoTocando) {
+                // Simula batimento cardíaco
+                function bater() {
+                    coracaoSom.play();
+                    this.style.transform = 'scale(1.2)';
+                    setTimeout(() => this.style.transform = 'scale(1)', 200);
+                }
+                
+                coracaoTocando = setInterval(bater.bind(this), 800);
+                this.style.background = '#ff69b4';
+            } else {
+                clearInterval(coracaoTocando);
+                coracaoTocando = false;
+                this.style.background = 'rgba(255,255,255,0.2)';
+            }
+        });
+
+        // Inicia animação
+        particulas = criarParticulasCoracao();
+        animar();
+
+        // Primeira instrução
+        document.getElementById('instrucao').innerHTML = '💗 Clique para começar a magia 💗';
+    </script>
+</body>
+</html>
