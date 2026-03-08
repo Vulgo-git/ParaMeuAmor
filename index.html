@@ -11,259 +11,61 @@
   --pink: #ff2b6a;
   --wine: #4a0e0e;
 }
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  background: #111;
-  font-family: 'Cinzel', serif;
-  overflow: hidden;
-  height: 100vh;
-  color: #fff;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  pointer-events: none;
-}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:#111; font-family:'Cinzel', serif; overflow:hidden; height:100vh; color:#fff; }
+canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
 
 /* Telas */
-.screen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 2;
-  padding: 20px;
-}
-
-.screen.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* TELA 1 - SÓ CORAÇÃO */
-#screen1 {
-  background: #111;
-}
+.screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; flex-direction:column; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:2; padding:20px; }
+.screen.active { opacity:1; pointer-events:auto; }
 
 /* TELA 2 - FOTO E FRASE */
-#screen2 img {
-  width: 250px;
-  border-radius: 15px;
-  border: 2px solid var(--pink);
-  box-shadow: 0 0 40px var(--pink);
-  margin-bottom: 20px;
-}
-
-#screen2 h1 {
-  color: var(--pink);
-  font-family: 'Dancing Script', cursive;
-  font-size: 42px;
-  text-shadow: 0 0 20px var(--pink);
-}
+#screen2 img { width:250px; border-radius:15px; border:2px solid var(--pink); box-shadow:0 0 40px var(--pink); margin-bottom:20px; }
+#screen2 h1 { color:var(--pink); font-family:'Dancing Script', cursive; font-size:42px; text-shadow:0 0 20px var(--pink); }
 
 /* TELA 3 - ENVELOPE */
-#envelope-box {
-  transform: translateY(100vh);
-  transition: transform 1s ease;
-  position: relative;
-}
+#envelope-box { transform:translateY(100vh); transition:transform 1s ease; position:relative; }
+#envelope-box img { width:250px; filter:drop-shadow(0 0 20px var(--gold)); }
+#openBtn { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--wine); color:var(--gold); border:2px solid var(--gold); width:80px; height:80px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; box-shadow:0 0 30px #900; z-index:10; font-family:'Cinzel', serif; }
 
-#envelope-box img {
-  width: 250px;
-  filter: drop-shadow(0 0 20px var(--gold));
-}
+/* CARTA */
+.parchment { width:90%; max-width:450px; background:#f9eac3; padding:40px 25px; border-radius:20px; border:8px solid #b87c4b; border-style:groove; color:#2c1e1a; font-family:'Dancing Script', cursive; font-size:1.2rem; line-height:1.6; max-height:70vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.8); }
+.parchment.dark { background:#2a2a2a; color:#fff; border-color:var(--gold); }
+.text-box { min-height:200px; white-space:pre-wrap; }
+.btn-small { background:var(--wine); color:var(--gold); border:1px solid var(--gold); padding:10px 20px; border-radius:30px; margin:10px; cursor:pointer; font-family:'Cinzel', serif; font-size:16px; box-shadow:0 0 15px var(--gold); }
 
-#openBtn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--wine);
-  color: var(--gold);
-  border: 2px solid var(--gold);
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 30px #900;
-  z-index: 10;
-  font-family: 'Cinzel', serif;
-}
+/* ROSA FINAL */
+.rosa-final { font-size:120px; animation:girar 4s infinite linear; filter:drop-shadow(0 0 40px #ff3366); margin-bottom:30px; }
+@keyframes girar { from { transform:rotateY(0deg);} to { transform:rotateY(360deg);} }
+#screen6 h1 { color:var(--pink); font-size:48px; font-family:'Dancing Script', cursive; text-shadow:0 0 30px var(--pink); }
+#screen6 h2 { color:var(--gold); font-size:32px; margin-top:20px; }
 
-/* TELA 4 - CARTA CLARA */
-.parchment {
-  width: 90%;
-  max-width: 450px;
-  background: #f9eac3;
-  padding: 40px 25px;
-  border-radius: 20px;
-  border: 8px solid #b87c4b;
-  border-style: groove;
-  color: #2c1e1a;
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.2rem;
-  line-height: 1.6;
-  max-height: 70vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-}
+/* Senha */
+#senha-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100; display:flex; justify-content:center; align-items:center; flex-direction:column; opacity:0; pointer-events:none; transition:0.3s; }
+#senha-screen.active { opacity:1; pointer-events:auto; }
+#senha-screen input { padding:15px; font-size:20px; margin:20px; border-radius:10px; border:2px solid var(--gold); background:#222; color:white; text-align:center; width:200px; }
 
-.text-box {
-  min-height: 200px;
-  white-space: pre-wrap;
-}
-
-/* TELA 5 - CARTA ESCURA */
-.parchment.dark {
-  background: #2a2a2a;
-  color: #fff;
-  border-color: var(--gold);
-}
-
-/* Botões redondos */
-.btn-circle {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: var(--pink);
-  color: white;
-  border: 3px solid var(--gold);
-  font-size: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: 0 0 30px var(--pink);
-  z-index: 20;
-  transition: 0.3s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btn-circle:active {
-  transform: scale(0.9);
-}
-
-.btn-circle.hidden {
-  display: none;
-}
-
-/* Botões menores */
-.btn-small {
-  background: var(--wine);
-  color: var(--gold);
-  border: 1px solid var(--gold);
-  padding: 10px 20px;
-  border-radius: 30px;
-  margin: 10px;
-  cursor: pointer;
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  box-shadow: 0 0 15px var(--gold);
-}
-
-/* TELA 6 - ROSA FINAL */
-.rosa-final {
-  font-size: 120px;
-  animation: girar 4s infinite linear;
-  filter: drop-shadow(0 0 40px #ff3366);
-  margin-bottom: 30px;
-}
-
-@keyframes girar {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(360deg); }
-}
-
-#screen6 h1 {
-  color: var(--pink);
-  font-size: 48px;
-  font-family: 'Dancing Script', cursive;
-  text-shadow: 0 0 30px var(--pink);
-}
-
-#screen6 h2 {
-  color: var(--gold);
-  font-size: 32px;
-  margin-top: 20px;
-}
-
-/* Tela de senha */
-#senha-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.95);
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s;
-}
-
-#senha-screen.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-#senha-screen input {
-  padding: 15px;
-  font-size: 20px;
-  margin: 20px;
-  border-radius: 10px;
-  border: 2px solid var(--gold);
-  background: #222;
-  color: white;
-  text-align: center;
-  width: 200px;
-}
+/* Botão avançar */
+.btn-circle { position:fixed; bottom:30px; right:30px; width:60px; height:60px; border-radius:50%; background:var(--pink); color:white; border:3px solid var(--gold); font-size:30px; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow:0 0 30px var(--pink); z-index:20; transition:0.3s; }
+.btn-circle:active { transform:scale(0.9);}
+.btn-circle.hidden { display:none;}
 </style>
 </head>
 <body>
 
+<audio id="musica" loop src="Lana-Del-Rey.mp3"></audio>
 <canvas id="canvas"></canvas>
 
-<!-- TELA 1: SÓ CORAÇÃO -->
-<div id="screen1" class="screen active">
-  <!-- só o canvas -->
-</div>
+<!-- Stage 1: coração laser -->
+<div id="screen1" class="screen active"></div>
 
-<!-- TELA 2: FOTO E FRASE -->
+<!-- Stage 2: foto e frase -->
 <div id="screen2" class="screen">
-  <img src="renata.jpg" alt="Renata" id="fotoRenata">
+  <img src="renata.jpg" alt="Renata">
   <h1>EU AMO VOCÊ</h1>
 </div>
 
-<!-- TELA 3: ENVELOPE -->
+<!-- Stage 3: envelope -->
 <div id="screen3" class="screen">
   <div id="envelope-box">
     <img src="envelope.png" alt="envelope">
@@ -271,47 +73,45 @@ canvas {
   </div>
 </div>
 
-<!-- TELA 4: CARTA CLARA -->
+<!-- Stage 4: carta clara -->
 <div id="screen4" class="screen">
   <div class="parchment">
     <div id="texto-carta" class="text-box"></div>
-    <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
+    <div style="display:flex; justify-content:center; gap:15px; margin-top:20px;">
       <button class="btn-small" id="secretoBtn">🔒 Só pra ela</button>
       <button class="btn-small" id="continuarBtn">Continuar</button>
     </div>
   </div>
 </div>
 
-<!-- TELA 5: CARTA ESCURA (TEXTO SECRETO) -->
+<!-- Stage 5: carta secreta -->
 <div id="screen5" class="screen">
   <div class="parchment dark">
     <div id="texto-secreto" class="text-box"></div>
-    <button class="btn-small" id="voltarBtn" style="margin-top: 20px;">Voltar</button>
+    <button class="btn-small" id="voltarBtn" style="margin-top:20px;">Voltar</button>
   </div>
 </div>
 
-<!-- TELA 6: ROSA FINAL -->
+<!-- Stage 6: rosa final -->
 <div id="screen6" class="screen">
   <div class="rosa-final">🌹</div>
   <h1>TE AMO</h1>
   <h2>FELIZ DIA DAS MULHERES</h2>
 </div>
 
-<!-- TELA DE SENHA -->
+<!-- Tela senha -->
 <div id="senha-screen">
-  <h2 style="color: var(--gold); margin-bottom: 20px;">SÓ PRA ELA</h2>
+  <h2 style="color:var(--gold); margin-bottom:20px;">SÓ PRA ELA</h2>
   <input type="password" id="senhaInput" placeholder="Digite a senha">
   <button class="btn-small" id="confirmarSenha">ENTRAR</button>
-  <button class="btn-small" id="cancelarSenha" style="background: #333;">Cancelar</button>
+  <button class="btn-small" id="cancelarSenha" style="background:#333;">Cancelar</button>
 </div>
 
-<!-- BOTÃO REDONDO PARA AVANÇAR -->
+<!-- Botão avançar -->
 <button class="btn-circle" id="nextBtn">→</button>
 
 <script>
-// ===========================================
-// CONFIGURAÇÕES
-// ===========================================
+// ================= CONFIG =================
 const TEXTO_PRINCIPAL = `Meu amor,
 
 Eu fiz isso só para você.
@@ -336,237 +136,64 @@ Não sou ninguém para falar isso, mas eu tenho muito orgulho de você, te conhe
 
 Continue sendo essa garota risonha, porque é maravilhoso escutar sua risada, eu realmente amo cada coisinha em você kkkkk, não desista e nunca pare de correr atrás de suas coisas, dificuldades e momentos ruins acontecem, tenho certeza que isso logo acabará e você vai viver feliz.`;
 
+
+
 const TEXTO_SECRETO = `Agora vou abrir um pouco meu coração..
 
-Minha princesa, eu sei que estamos longe um do outro, e isso às vezes aperta o peito. Mas saiba que cada segundo longe de você é um segundo pensando em você.
+Minha princesa, eu sei que estamos longe um do outro, literalmente uma das coisas que mais me machucam todos os dias, eu ultimamente sou uma pessoa triste por estar longe de você, eu sei que você me entende, e dói muito não poder sentir você ou algo simples que é olhar em seus olhos, o que eu vou falar agora pode ser egoísta, mas o que eu mais anseio é poder estar e viver com você nesse momento, a dor de não poder ser seu apoio em suas dificuldades, não conseguir te dar no mínimo um colo em seus momentos tristes me machuca todos os dias, me deixa triste ver você passando por essas situações merdas e não poder te dar um simples abraço, amor eu te amo tanto, em breve se Deus quiser vamos estar juntos e planejando nosso futuro, eu quero viver com você sempre, eu preciso de você, eu quero cuidar de você, quero ser o seu porto seguro em seus momentos frágeis, quero ser a pessoa que vai beijar e ajudar a cicatrizar e curar tudo o que te machuca, eu quero te fazer a mulher mais feliz desse mundo.
 
-Seu sorriso ilumina meus dias mesmo à distância. Sua voz é a música que eu quero ouvir todos os dias.
+Eu te amo muito minha garota inefável, eu te amo de todo o meu coração 🌹❤️;
 
-Quando a gente se encontrar, vou te abraçar tão forte que vai compensar todo esse tempo.
+Você é a mulher mais linda desse mundo, eu amo seu cabelo, eu amo sua boca, eu amo seu narizinho maravilhoso, amo seus olhos, amo demais esse pescoço lindo kkkkk, sua cinturinha maravilhosa e esse copitcho que me deixa com vontade de morder, você é muito gostosa, perfeita, eu quero você toda, você é meu tesão, eu te quero muito.
 
-Você é meu sonho, minha realidade, meu futuro.
+Enfim, feliz Dia das Mulheres meu amor, eu te amo muito muito muito.`;
 
-Com amor, pra sempre seu. ❤️`;
+const SENHA = "0312";
 
-const SENHA = "0312"; // MUDE AQUI PARA A SENHA DE VOCÊS
-
-// ===========================================
-// CANVAS E PÉTALAS (LEVES)
-// =========================================
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-let stage = 1; // 1 = coração, 2 = foto, 3 = envelope, 4 = carta, 5 = secreta, 6 = final
+let stage = 1;
 let petalas = [];
-let musica = new Audio();
-musica.loop = true;
-musica.src = 'Lana-Del-Rey.mp3';
+let musica = document.getElementById('musica');
 
-// Ajusta canvas
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
+window.addEventListener('resize',resizeCanvas); resizeCanvas();
 
-// Criar pétalas (só 30, leves)
-function criarPetalas() {
-  for (let i = 0; i < 30; i++) {
-    petalas.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      tamanho: 10 + Math.random() * 15,
-      velocidade: 1 + Math.random() * 2,
-      rotacao: Math.random() * Math.PI * 2,
-      cor: `rgba(255, 80, 120, ${0.3 + Math.random() * 0.3})`
-    });
-  }
-}
-criarPetalas();
+// Criar pétalas leves
+for(let i=0;i<30;i++){petalas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,tamanho:10+Math.random()*15,velocidade:1+Math.random()*2,rotacao:Math.random()*Math.PI*2,cor:`rgba(255,80,120,${0.3+Math.random()*0.3})`})}
+function desenharPetalas(){petalas.forEach(p=>{p.y+=p.velocidade*0.5; p.rotacao+=0.01; if(p.y>canvas.height+50){p.y=-50;p.x=Math.random()*canvas.width} ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rotacao); ctx.fillStyle=p.cor; ctx.shadowBlur=10; ctx.shadowColor='#ff69b4'; ctx.beginPath(); ctx.ellipse(0,0,p.tamanho/2,p.tamanho/4,0,0,Math.PI*2); ctx.fill(); ctx.restore();})}
 
-// Desenhar pétalas (bem leves)
-function desenharPetalas() {
-  petalas.forEach(p => {
-    p.y += p.velocidade * 0.5; // Mais lento
-    p.rotacao += 0.01;
-    
-    if (p.y > canvas.height + 50) {
-      p.y = -50;
-      p.x = Math.random() * canvas.width;
-    }
-    
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rotacao);
-    ctx.fillStyle = p.cor;
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = '#ff69b4';
-    ctx.beginPath();
-    ctx.ellipse(0, 0, p.tamanho/2, p.tamanho/4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  });
-}
-
-// Desenhar coração bonito
-function desenharCoracao(tempo) {
-  ctx.save();
-  ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(Math.sin(tempo * 0.5) * 0.05);
-  
-  // Linha principal
-  ctx.beginPath();
-  ctx.strokeStyle = '#ff69b4';
-  ctx.lineWidth = 4;
-  ctx.shadowBlur = 30;
-  ctx.shadowColor = '#ff1493';
-  
-  for (let i = 0; i <= Math.PI * 2; i += 0.05) {
-    const x = 16 * Math.pow(Math.sin(i), 3);
-    const y = -(13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
-    
-    if (i === 0) ctx.moveTo(x * 18, y * 18);
-    else ctx.lineTo(x * 18, y * 18);
-  }
-  ctx.stroke();
-  
-  // Pontinhos
-  for (let j = 0; j < 20; j++) {
-    const angle = (j / 20) * Math.PI * 2;
-    const x = 16 * Math.pow(Math.sin(angle), 3) * 18;
-    const y = -(13 * Math.cos(angle) - 5 * Math.cos(2*angle) - 2 * Math.cos(3*angle) - Math.cos(4*angle)) * 18;
-    
-    ctx.beginPath();
-    ctx.arc(x, y, 3 + Math.sin(tempo + j) * 1, 0, Math.PI * 2);
-    ctx.fillStyle = '#ff69b4';
-    ctx.fill();
-  }
-  
-  ctx.restore();
+// Coração
+function desenharCoracao(tempo, escala=18, cx=canvas.width/2, cy=canvas.height/2){
+ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.sin(tempo*0.5)*0.05);
+ctx.beginPath(); ctx.strokeStyle='#ff69b4'; ctx.lineWidth=4; ctx.shadowBlur=30; ctx.shadowColor='#ff1493';
+for(let t=0;t<=Math.PI*2;t+=0.05){const x=16*Math.pow(Math.sin(t),3); const y=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)); t===0?ctx.moveTo(x*escala,y*escala):ctx.lineTo(x*escala,y*escala);} ctx.stroke();
+for(let j=0;j<20;j++){const angle=(j/20)*Math.PI*2; const x=16*Math.pow(Math.sin(angle),3)*escala; const y=-(13*Math.cos(angle)-5*Math.cos(2*angle)-2*Math.cos(3*angle)-Math.cos(4*angle))*escala;
+ctx.beginPath(); ctx.arc(x,y,3+Math.sin(tempo+j)*1,0,Math.PI*2); ctx.fillStyle='#ff69b4'; ctx.fill();} ctx.restore();
 }
 
 // Animação
-function animar() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  const tempo = Date.now() * 0.002;
-  
-  // Só desenha coração se estiver no stage 1
-  if (stage === 1) {
-    desenharCoracao(tempo);
-  }
-  
-  // Pétalas começam a cair a partir do stage 3
-  if (stage >= 3) {
-    desenharPetalas();
-  }
-  
-  requestAnimationFrame(animar);
-}
+function animar(){ctx.clearRect(0,0,canvas.width,canvas.height); const tempo=Date.now()*0.002; if(stage===1)desenharCoracao(tempo,18); if(stage===2)desenharCoracao(tempo,22); if(stage>=3)desenharPetalas(); requestAnimationFrame(animar);}
 animar();
 
-// ===========================================
-// CONTROLE DE TELAS
-// ===========================================
-function mostrarTela(numero) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(`screen${numero}`).classList.add('active');
-  stage = numero;
-  
-  // Esconde botão nas telas 4, 5, 6
-  const btn = document.getElementById('nextBtn');
-  if (numero >= 4) {
-    btn.classList.add('hidden');
-  } else {
-    btn.classList.remove('hidden');
-  }
-  
-  // Se for tela 3, anima envelope
-  if (numero === 3) {
-    setTimeout(() => {
-      document.getElementById('envelope-box').style.transform = 'translateY(0)';
-    }, 100);
-  }
-}
+// ================= CONTROLE DE TELAS =================
+function mostrarTela(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(`screen${n}`).classList.add('active'); stage=n;
+document.getElementById('nextBtn').classList.toggle('hidden',n>=4); if(n===3){setTimeout(()=>{document.getElementById('envelope-box').style.transform='translateY(0)';},100)}}
 
-// Botão próximo
-document.getElementById('nextBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  
-  // Toca música no primeiro avanço
-  if (stage === 1) {
-    musica.play().catch(() => {});
-  }
-  
-  if (stage === 1) {
-    mostrarTela(2);
-  } else if (stage === 2) {
-    mostrarTela(3);
-  } else if (stage === 3) {
-    // Vai para carta, mas precisa do OPEN
-  }
-});
+document.getElementById('nextBtn').addEventListener('click',e=>{e.stopPropagation(); if(stage===1){musica.play().catch(()=>{}); mostrarTela(2);} else if(stage===2){mostrarTela(3);}});
 
-// Botão OPEN
-document.getElementById('openBtn').addEventListener('click', function() {
-  mostrarTela(4);
-  
-  // Digita texto
-  const textoEl = document.getElementById('texto-carta');
-  textoEl.innerHTML = '';
-  let i = 0;
-  function digitar() {
-    if (i < TEXTO_PRINCIPAL.length) {
-      textoEl.innerHTML += TEXTO_PRINCIPAL[i];
-      i++;
-      setTimeout(digitar, 30);
-    }
-  }
-  digitar();
-});
+document.getElementById('openBtn').addEventListener('click',()=>{mostrarTela(4); digitarTexto(document.getElementById('texto-carta'),TEXTO_PRINCIPAL);});
 
-// Botão secreto
-document.getElementById('secretoBtn').addEventListener('click', function() {
-  document.getElementById('senha-screen').classList.add('active');
-});
+function digitarTexto(el,texto,vel=30){el.innerHTML=''; let i=0; function dig(){if(i<texto.length){el.innerHTML+=texto[i]; i++; setTimeout(dig,vel);}} dig();}
 
-// Confirmar senha
-document.getElementById('confirmarSenha').addEventListener('click', function() {
-  const input = document.getElementById('senhaInput');
-  if (input.value === SENHA) {
-    document.getElementById('senha-screen').classList.remove('active');
-    mostrarTela(5);
-    
-    // Mostra texto secreto
-    document.getElementById('texto-secreto').innerHTML = TEXTO_SECRETO;
-  } else {
-    alert('Senha errada!');
-  }
-});
+// Carta secreta
+document.getElementById('secretoBtn').addEventListener('click',()=>{document.getElementById('senha-screen').classList.add('active');});
+document.getElementById('confirmarSenha').addEventListener('click',()=>{const input=document.getElementById('senhaInput'); if(input.value===SENHA){document.getElementById('senha-screen').classList.remove('active'); mostrarTela(5); document.getElementById('texto-secreto').innerHTML=TEXTO_SECRETO;}else{alert('Senha errada!');}});
+document.getElementById('cancelarSenha').addEventListener('click',()=>{document.getElementById('senha-screen').classList.remove('active');});
+document.getElementById('voltarBtn').addEventListener('click',()=>{mostrarTela(4);});
+document.getElementById('continuarBtn').addEventListener('click',()=>{mostrarTela(6);});
+document.getElementById('senha-screen').addEventListener('click',e=>{if(e.target===this)this.classList.remove('active');});
 
-// Cancelar senha
-document.getElementById('cancelarSenha').addEventListener('click', function() {
-  document.getElementById('senha-screen').classList.remove('active');
-});
-
-// Voltar da tela secreta
-document.getElementById('voltarBtn').addEventListener('click', function() {
-  mostrarTela(4);
-});
-
-// Continuar para o final
-document.getElementById('continuarBtn').addEventListener('click', function() {
-  mostrarTela(6);
-});
-
-// Fechar senha clicando fora
-document.getElementById('senha-screen').addEventListener('click', function(e) {
-  if (e.target === this) {
-    this.classList.remove('active');
-  }
-});
-
-// Inicia
 mostrarTela(1);
 </script>
 </body>
