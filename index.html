@@ -6,46 +6,43 @@
 <title>Para Renata</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --gold: #d4af37;
-  --pink: #ff2b6a;
-  --wine: #4a0e0e;
-}
+:root { --gold:#d4af37; --pink:#ff2b6a; --wine:#4a0e0e; }
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { background:#111; font-family:'Cinzel', serif; overflow:hidden; height:100vh; color:#fff; }
-canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+body { background:#111; font-family:'Cinzel', serif; overflow:hidden; height:100vh; color:#fff; display:flex; justify-content:center; align-items:center; }
 
-/* Telas */
 .screen { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; flex-direction:column; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:2; padding:20px; }
 .screen.active { opacity:1; pointer-events:auto; }
 
-/* TELA 2 - FOTO E FRASE */
+#screen1 svg { width:250px; height:250px; }
+#screen1 path#line { fill:none; stroke:#e00000; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:1; stroke-dashoffset:1; animation:dash 1s linear infinite; }
+#screen1 path#heart { fill:#ff9999; stroke:#ff9999; stroke-width:1.5; transform-origin:50% 50%; animation:blink 4s linear infinite; }
+
+@keyframes dash { 0% { stroke-dashoffset: 1; } 50% { stroke-dashoffset:0; } 100% { stroke-dashoffset:1; } }
+@keyframes blink { 0%,60%{opacity:0;transform:scale(0);}70%,75%,80%,85%{opacity:1;transform:scale(1.2);}100%{opacity:0;transform:scale(1);} }
+
 #screen2 img { width:250px; border-radius:15px; border:2px solid var(--pink); box-shadow:0 0 40px var(--pink); margin-bottom:20px; }
-#screen2 h1 { color:var(--pink); font-family:'Dancing Script', cursive; font-size:42px; text-shadow:0 0 20px var(--pink); }
+#screen2 h1 { color:var(--pink); font-family:'Dancing Script', cursive; font-size:42px; text-shadow:0 0 20px var(--pink); margin-top:-20px; }
 
-/* TELA 3 - ENVELOPE */
-#envelope-box { transform:translateY(100vh); transition:transform 1s ease; position:relative; }
-#envelope-box img { width:250px; filter:drop-shadow(0 0 20px var(--gold)); }
-#openBtn { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:var(--wine); color:var(--gold); border:2px solid var(--gold); width:80px; height:80px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; box-shadow:0 0 30px #900; z-index:10; font-family:'Cinzel', serif; }
+.env-container { perspective:800px; width:250px; height:150px; position:relative; margin-top:30px; }
+.envelope { width:100%; height:100%; background:#8c2b2b; border-radius:6px; transform-style:preserve-3d; transform-origin:top center; transition:transform 0.8s ease; position:relative; }
+.envelope .flap { position:absolute; top:-50px; left:0; width:0; height:0; border-left:125px solid transparent; border-right:125px solid transparent; border-bottom:50px solid #c0392b; transform-origin:bottom center; transition:transform 0.6s ease; }
+.envelope.open { transform: rotateX(180deg) translateY(-60px); }
+.envelope.open .flap { transform: rotateX(180deg); }
 
-/* CARTA */
+#openBtn { background:var(--wine); color:var(--gold); border:2px solid var(--gold); width:80px; height:80px; border-radius:50%; font-size:18px; font-weight:bold; cursor:pointer; box-shadow:0 0 30px #900; font-family:'Cinzel', serif; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+
 .parchment { width:90%; max-width:450px; background:#f9eac3; padding:40px 25px; border-radius:20px; border:8px solid #b87c4b; border-style:groove; color:#2c1e1a; font-family:'Dancing Script', cursive; font-size:1.2rem; line-height:1.6; max-height:70vh; overflow-y:auto; box-shadow:0 20px 40px rgba(0,0,0,0.8); }
 .parchment.dark { background:#2a2a2a; color:#fff; border-color:var(--gold); }
 .text-box { min-height:200px; white-space:pre-wrap; }
 .btn-small { background:var(--wine); color:var(--gold); border:1px solid var(--gold); padding:10px 20px; border-radius:30px; margin:10px; cursor:pointer; font-family:'Cinzel', serif; font-size:16px; box-shadow:0 0 15px var(--gold); }
 
-/* ROSA FINAL */
-.rosa-final { font-size:120px; animation:girar 4s infinite linear; filter:drop-shadow(0 0 40px #ff3366); margin-bottom:30px; }
-@keyframes girar { from { transform:rotateY(0deg);} to { transform:rotateY(360deg);} }
-#screen6 h1 { color:var(--pink); font-size:48px; font-family:'Dancing Script', cursive; text-shadow:0 0 30px var(--pink); }
-#screen6 h2 { color:var(--gold); font-size:32px; margin-top:20px; }
+#screen6 .rosa-final { font-size:120px; animation:girar 4s infinite linear; filter:drop-shadow(0 0 40px #ff3366); margin-bottom:30px; }
+@keyframes girar { from{transform:rotateY(0deg);} to{transform:rotateY(360deg);} }
 
-/* Senha */
 #senha-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100; display:flex; justify-content:center; align-items:center; flex-direction:column; opacity:0; pointer-events:none; transition:0.3s; }
 #senha-screen.active { opacity:1; pointer-events:auto; }
 #senha-screen input { padding:15px; font-size:20px; margin:20px; border-radius:10px; border:2px solid var(--gold); background:#222; color:white; text-align:center; width:200px; }
 
-/* Botão avançar */
 .btn-circle { position:fixed; bottom:30px; right:30px; width:60px; height:60px; border-radius:50%; background:var(--pink); color:white; border:3px solid var(--gold); font-size:30px; display:flex; justify-content:center; align-items:center; cursor:pointer; box-shadow:0 0 30px var(--pink); z-index:20; transition:0.3s; }
 .btn-circle:active { transform:scale(0.9);}
 .btn-circle.hidden { display:none;}
@@ -54,29 +51,34 @@ canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; poin
 <body>
 
 <audio id="musica" loop src="Lana-Del-Rey.mp3"></audio>
-<canvas id="canvas"></canvas>
 
-<!-- Stage 1: coração laser -->
-<div id="screen1" class="screen active"></div>
+<!-- Tela 1: coração cardíaco -->
+<div id="screen1" class="screen active">
+  <svg xmlns="http://www.w3.org/2000/svg" id="svg5" viewBox="0 0 502.98 108.61"> 
+    <path id="heart" d="M213.35 29.43c19.41-15.19 33.68 10.86 37.73 18.82-.28-13.61 11.64-40.98 25.94-34.01 32.3 15.74-15.88 83.8-26.4 81.76-13.24-9-51.35-53.3-37.27-66.57Z"/>
+    <path pathLength="1" id="line" d="M5.32 78.13c.96-.01 5-8.5 5.54-8.54.58-.05 6.1 8.51 7.1 8.51 3.66 0 9.29.06 10.71.05 2.53-.01 4.82-72.88 4.82-72.88l4.76 97.28 3.97-24.45 20.45-.22C64 77.86 77.1 63.66 78.36 63.8c1.31.15 6.68 14.08 7.94 14.07"/>
+  </svg>
+  <button class="btn-circle" id="nextBtn">→</button>
+</div>
 
-<!-- Stage 2: foto e frase -->
+<!-- Tela 2: foto com coração rosa -->
 <div id="screen2" class="screen">
   <img src="renata.jpg" alt="Renata">
   <h1>EU AMO VOCÊ</h1>
 </div>
 
-<!-- Stage 3: envelope -->
+<!-- Tela 3: envelope -->
 <div id="screen3" class="screen">
-  <div id="envelope-box">
-    <img src="envelope.png" alt="envelope">
+  <div class="env-container">
+    <div class="envelope" id="env"><div class="flap"></div></div>
     <button id="openBtn">OPEN</button>
   </div>
 </div>
 
-<!-- Stage 4: carta clara -->
+<!-- Tela 4: carta -->
 <div id="screen4" class="screen">
   <div class="parchment">
-    <div id="texto-carta" class="text-box"></div>
+    <div id="texto-carta" class="text-box">Aqui você coloca seu texto principal...</div>
     <div style="display:flex; justify-content:center; gap:15px; margin-top:20px;">
       <button class="btn-small" id="secretoBtn">🔒 Só para Você</button>
       <button class="btn-small" id="continuarBtn">Continuar</button>
@@ -84,22 +86,22 @@ canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; poin
   </div>
 </div>
 
-<!-- Stage 5: carta secreta -->
+<!-- Tela 5: carta secreta -->
 <div id="screen5" class="screen">
   <div class="parchment dark">
-    <div id="texto-secreto" class="text-box"></div>
+    <div id="texto-secreto" class="text-box">Aqui você coloca o texto secreto...</div>
     <button class="btn-small" id="voltarBtn" style="margin-top:20px;">Voltar</button>
   </div>
 </div>
 
-<!-- Stage 6: rosa final -->
+<!-- Tela 6: final -->
 <div id="screen6" class="screen">
   <div class="rosa-final">🌹</div>
   <h1>TE AMO</h1>
   <h2>FELIZ DIA DAS MULHERES</h2>
 </div>
 
-<!-- Tela senha -->
+<!-- Tela de senha -->
 <div id="senha-screen">
   <h2 style="color:var(--gold); margin-bottom:20px;">SÓ PARA VOCÊ</h2>
   <input type="password" id="senhaInput" placeholder="Digite a senha">
@@ -107,11 +109,8 @@ canvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; poin
   <button class="btn-small" id="cancelarSenha" style="background:#333;">Cancelar</button>
 </div>
 
-<!-- Botão avançar -->
-<button class="btn-circle" id="nextBtn">→</button>
-
 <script>
-// ================= CONFIG =================
+// ================== Config ==================
 const TEXTO_PRINCIPAL = `Meu amor,
 
 Eu fiz isso só para você.
@@ -138,6 +137,7 @@ Continue sendo essa garota risonha, porque é maravilhoso escutar sua risada, eu
 
 
 
+
 const TEXTO_SECRETO = `Agora vou abrir um pouco meu coração..
 
 Minha princesa, eu sei que estamos longe um do outro, literalmente uma das coisas que mais me machucam todos os dias, eu ultimamente sou uma pessoa triste por estar longe de você, eu sei que você me entende, e dói muito não poder sentir você ou algo simples que é olhar em seus olhos, o que eu vou falar agora pode ser egoísta, mas o que eu mais anseio é poder estar e viver com você nesse momento, a dor de não poder ser seu apoio em suas dificuldades, não conseguir te dar no mínimo um colo em seus momentos tristes me machuca todos os dias, me deixa triste ver você passando por essas situações merdas e não poder te dar um simples abraço, amor eu te amo tanto, em breve se Deus quiser vamos estar juntos e planejando nosso futuro, eu quero viver com você sempre, eu preciso de você, eu quero cuidar de você, quero ser o seu porto seguro em seus momentos frágeis, quero ser a pessoa que vai beijar e ajudar a cicatrizar e curar tudo o que te machuca, eu quero te fazer a mulher mais feliz desse mundo.
@@ -147,54 +147,63 @@ Eu te amo muito minha garota inefável, eu te amo de todo o meu coração 🌹�
 Você é a mulher mais linda desse mundo, eu amo seu cabelo, eu amo sua boca, eu amo seu narizinho maravilhoso, amo seus olhos, amo demais esse pescoço lindo kkkkk, sua cinturinha maravilhosa e esse copitcho que me deixa com vontade de morder, você é muito gostosa, perfeita, eu quero você toda, você é meu tesão, eu te quero muito.
 
 Enfim, feliz Dia das Mulheres meu amor, eu te amo muito muito muito.`;
-
 const SENHA = "0312";
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const musica = document.getElementById('musica');
 let stage = 1;
-let petalas = [];
-let musica = document.getElementById('musica');
 
-function resizeCanvas(){canvas.width=window.innerWidth; canvas.height=window.innerHeight;}
-window.addEventListener('resize',resizeCanvas); resizeCanvas();
-
-// Pétalas
-for(let i=0;i<30;i++){petalas.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,tamanho:10+Math.random()*15,velocidade:1+Math.random()*2,rotacao:Math.random()*Math.PI*2,cor:`rgba(255,80,120,${0.3+Math.random()*0.3})`})}
-function desenharPetalas(){petalas.forEach(p=>{p.y+=p.velocidade*0.5; p.rotacao+=0.01; if(p.y>canvas.height+50){p.y=-50;p.x=Math.random()*canvas.width} ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rotacao); ctx.fillStyle=p.cor; ctx.shadowBlur=10; ctx.shadowColor='#ff69b4'; ctx.beginPath(); ctx.ellipse(0,0,p.tamanho/2,p.tamanho/4,0,0,Math.PI*2); ctx.fill(); ctx.restore();})}
-
-// Coração (maior no topo)
-function desenharCoracao(tempo, escala=20, cx=canvas.width/2, cy=canvas.height/2){
-ctx.save(); ctx.translate(cx,cy); ctx.rotate(Math.sin(tempo*0.5)*0.05);
-ctx.beginPath(); ctx.strokeStyle='#ff69b4'; ctx.lineWidth=4; ctx.shadowBlur=30; ctx.shadowColor='#ff1493';
-for(let t=0;t<=Math.PI*2;t+=0.05){const x=16*Math.pow(Math.sin(t),3); const y=-(15*Math.cos(t)-6*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)); t===0?ctx.moveTo(x*escala,y*escala):ctx.lineTo(x*escala,y*escala);} ctx.stroke();
-for(let j=0;j<20;j++){const angle=(j/20)*Math.PI*2; const x=16*Math.pow(Math.sin(angle),3)*escala; const y=-(15*Math.cos(angle)-6*Math.cos(2*angle)-2*Math.cos(3*angle)-Math.cos(4*angle))*escala;
-ctx.beginPath(); ctx.arc(x,y,3+Math.sin(tempo+j)*1,0,Math.PI*2); ctx.fillStyle='#ff69b4'; ctx.fill();} ctx.restore();
+// ================== Telas ==================
+function mostrarTela(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`screen${n}`).classList.add('active');
+  stage=n;
 }
 
-// Animação
-function animar(){ctx.clearRect(0,0,canvas.width,canvas.height); const tempo=Date.now()*0.002; if(stage===1)desenharCoracao(tempo,20); if(stage===2)desenharCoracao(tempo,22); if(stage>=3)desenharPetalas(); requestAnimationFrame(animar);}
-animar();
+// ================== Tela 1 → Tela 2 ==================
+const nextBtn = document.getElementById('nextBtn');
+nextBtn.addEventListener('click',()=>{
+  musica.play().catch(()=>{});
+  mostrarTela(2);
+});
 
-// ================= CONTROLE DE TELAS =================
-function mostrarTela(n){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(`screen${n}`).classList.add('active'); stage=n;
-document.getElementById('nextBtn').classList.toggle('hidden',n>=4); if(n===3){setTimeout(()=>{document.getElementById('envelope-box').style.transform='translateY(0)';},100)}}
+// ================== Tela 2 → Tela 3 ==================
+document.getElementById('screen2').addEventListener('click',()=>mostrarTela(3));
 
-document.getElementById('nextBtn').addEventListener('click',e=>{e.stopPropagation(); if(stage===1){musica.play().catch(()=>{}); mostrarTela(2);} else if(stage===2){mostrarTela(3);}});
+// ================== Envelope ==================
+const env = document.getElementById('env');
+const openBtn = document.getElementById('openBtn');
+openBtn.addEventListener('click',()=>{
+  env.classList.add('open');
+  setTimeout(()=>{mostrarTela(4); digitarTexto(document.getElementById('texto-carta'),TEXTO_PRINCIPAL);},800);
+});
 
-document.getElementById('openBtn').addEventListener('click',()=>{mostrarTela(4); digitarTexto(document.getElementById('texto-carta'),TEXTO_PRINCIPAL);});
+// ================== Digitação do texto ==================
+function digitarTexto(el,texto,vel=30){
+  el.innerHTML='';
+  let i=0;
+  function dig(){
+    if(i<texto.length){el.innerHTML+=texto[i]; i++; setTimeout(dig,vel);}
+  }
+  dig();
+}
 
-function digitarTexto(el,texto,vel=30){el.innerHTML=''; let i=0; function dig(){if(i<texto.length){el.innerHTML+=texto[i]; i++; setTimeout(dig,vel);}} dig();}
-
-// Carta secreta
+// ================== Tela secreta ==================
 document.getElementById('secretoBtn').addEventListener('click',()=>{document.getElementById('senha-screen').classList.add('active');});
-document.getElementById('confirmarSenha').addEventListener('click',()=>{const input=document.getElementById('senhaInput'); if(input.value===SENHA){document.getElementById('senha-screen').classList.remove('active'); mostrarTela(5); digitarTexto(document.getElementById('texto-secreto'),TEXTO_SECRETO);}else{alert('Senha errada!');}});
+document.getElementById('confirmarSenha').addEventListener('click',()=>{
+  const input=document.getElementById('senhaInput');
+  if(input.value===SENHA){
+    document.getElementById('senha-screen').classList.remove('active');
+    mostrarTela(5);
+    digitarTexto(document.getElementById('texto-secreto'),TEXTO_SECRETO);
+  } else { alert('Senha errada!'); }
+});
 document.getElementById('cancelarSenha').addEventListener('click',()=>{document.getElementById('senha-screen').classList.remove('active');});
 document.getElementById('voltarBtn').addEventListener('click',()=>{mostrarTela(4);});
 document.getElementById('continuarBtn').addEventListener('click',()=>{mostrarTela(6);});
-document.getElementById('senha-screen').addEventListener('click',function(e){if(e.target===this)this.classList.remove('active');});
 
+// ================== Inicial ==================
 mostrarTela(1);
 </script>
+
 </body>
 </html>
