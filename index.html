@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Para Renata</title>
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -12,116 +12,214 @@
   --wine: #4a0e0e;
 }
 
-* { margin:0; padding:0; box-sizing:border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background:#111;
+  background: #111;
   font-family: 'Cinzel', serif;
-  overflow:hidden;
-  height:100vh;
-  color:#fff;
+  overflow: hidden;
+  height: 100vh;
+  color: #fff;
 }
 
 canvas {
-  position:fixed;
-  top:0;
-  left:0;
-  z-index:1;
-  pointer-events:none;
-}
-
-.layer {
-  position:absolute;
-  width:100%;
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  text-align:center;
-  opacity:0;
-  transition:opacity 0.8s ease;
-  pointer-events:none;
-}
-
-.active { opacity:1; pointer-events:auto; }
-
-/* Fotos e frases */
-#step1 img {
-  width:250px;
-  border-radius:15px;
-  border:2px solid var(--pink);
-  box-shadow:0 0 30px var(--pink);
-}
-#step1 h1 { margin-top:20px; color:var(--pink); letter-spacing:4px; font-family:'Dancing Script', cursive; font-weight:600; }
-
-/* Envelope */
-#envelope-box { transform:translateY(100vh); transition:1s; position:relative; }
-#envelope-box img { width:250px; background:transparent; border-radius:10px; }
-#envelope-box button {
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  border:none;
-  border-radius:50%;
-  padding:20px 25px;
-  background:#900;
-  color:#fff;
-  font-family:'Cinzel', serif;
-  cursor:pointer;
-  box-shadow:0 0 20px #900;
-}
-
-/* Folhas */
-.parchment {
-  width:90%;
-  max-width:450px;
-  aspect-ratio:3/4;
-  padding:50px 40px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  font-family:'Dancing Script', cursive;
-  font-size:1.3rem;
-  line-height:1.5;
-  color:#fff;
-}
-.clara { background:url('folha_clara.png') no-repeat center/cover; color:#2c1e1a; }
-.preta { background:url('folha_preta.png') no-repeat center/cover; color:#fff; }
-
-.text-box { 
-  min-height:150px; 
-  width:100%;
-  overflow-y: auto;
-  max-height: 300px;
-  padding: 10px;
-}
-
-.btn-container { display:flex; gap:15px; margin-top:20px; justify-content:center; }
-.btn-ui {
-  background: var(--wine); color: var(--gold);
-  border:1px solid var(--gold);
-  padding:12px 20px;
-  cursor:pointer;
-  border-radius:8px;
-  font-family:'Cinzel', serif;
-  transition:0.3s;
-}
-.btn-ui:hover { transform:scale(1.1); background:#631414; }
-
-/* Rosa final giratória */
-.rosa-final { font-size:100px; animation:rotateVertical 4s linear infinite; }
-@keyframes rotateVertical { from { transform:rotateY(0deg); } to { transform:rotateY(360deg); } }
-
-/* Senha */
-#password-screen {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.9);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Telas */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 2;
+  padding: 20px;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* TELA 1 - SÓ CORAÇÃO */
+#screen1 {
+  background: #111;
+}
+
+/* TELA 2 - FOTO E FRASE */
+#screen2 img {
+  width: 250px;
+  border-radius: 15px;
+  border: 2px solid var(--pink);
+  box-shadow: 0 0 40px var(--pink);
+  margin-bottom: 20px;
+}
+
+#screen2 h1 {
+  color: var(--pink);
+  font-family: 'Dancing Script', cursive;
+  font-size: 42px;
+  text-shadow: 0 0 20px var(--pink);
+}
+
+/* TELA 3 - ENVELOPE */
+#envelope-box {
+  transform: translateY(100vh);
+  transition: transform 1s ease;
+  position: relative;
+}
+
+#envelope-box img {
+  width: 250px;
+  filter: drop-shadow(0 0 20px var(--gold));
+}
+
+#openBtn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--wine);
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 30px #900;
+  z-index: 10;
+  font-family: 'Cinzel', serif;
+}
+
+/* TELA 4 - CARTA CLARA */
+.parchment {
+  width: 90%;
+  max-width: 450px;
+  background: #f9eac3;
+  padding: 40px 25px;
+  border-radius: 20px;
+  border: 8px solid #b87c4b;
+  border-style: groove;
+  color: #2c1e1a;
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+}
+
+.text-box {
+  min-height: 200px;
+  white-space: pre-wrap;
+}
+
+/* TELA 5 - CARTA ESCURA */
+.parchment.dark {
+  background: #2a2a2a;
+  color: #fff;
+  border-color: var(--gold);
+}
+
+/* Botões redondos */
+.btn-circle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--pink);
+  color: white;
+  border: 3px solid var(--gold);
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 30px var(--pink);
+  z-index: 20;
+  transition: 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-circle:active {
+  transform: scale(0.9);
+}
+
+.btn-circle.hidden {
+  display: none;
+}
+
+/* Botões menores */
+.btn-small {
+  background: var(--wine);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 10px 20px;
+  border-radius: 30px;
+  margin: 10px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  box-shadow: 0 0 15px var(--gold);
+}
+
+/* TELA 6 - ROSA FINAL */
+.rosa-final {
+  font-size: 120px;
+  animation: girar 4s infinite linear;
+  filter: drop-shadow(0 0 40px #ff3366);
+  margin-bottom: 30px;
+}
+
+@keyframes girar {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+#screen6 h1 {
+  color: var(--pink);
+  font-size: 48px;
+  font-family: 'Dancing Script', cursive;
+  text-shadow: 0 0 30px var(--pink);
+}
+
+#screen6 h2 {
+  color: var(--gold);
+  font-size: 32px;
+  margin-top: 20px;
+}
+
+/* Tela de senha */
+#senha-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.95);
   z-index: 100;
   display: flex;
   justify-content: center;
@@ -129,13 +227,15 @@ canvas {
   flex-direction: column;
   opacity: 0;
   pointer-events: none;
-  transition: 0.5s;
+  transition: 0.3s;
 }
-#password-screen.active {
+
+#senha-screen.active {
   opacity: 1;
   pointer-events: auto;
 }
-#password-screen input {
+
+#senha-screen input {
   padding: 15px;
   font-size: 20px;
   margin: 20px;
@@ -144,64 +244,75 @@ canvas {
   background: #222;
   color: white;
   text-align: center;
+  width: 200px;
 }
 </style>
 </head>
 <body>
 
-<audio id="musica" loop><source src="Lana-Del-Rey.mp3" type="audio/mp3"></audio>
-<canvas id="mainCanvas"></canvas>
+<canvas id="canvas"></canvas>
 
-<div id="step1" class="layer">
-  <img src="renata.jpg" alt="">
+<!-- TELA 1: SÓ CORAÇÃO -->
+<div id="screen1" class="screen active">
+  <!-- só o canvas -->
+</div>
+
+<!-- TELA 2: FOTO E FRASE -->
+<div id="screen2" class="screen">
+  <img src="renata.jpg" alt="Renata" id="fotoRenata">
   <h1>EU AMO VOCÊ</h1>
 </div>
 
-<div id="step2" class="layer">
+<!-- TELA 3: ENVELOPE -->
+<div id="screen3" class="screen">
   <div id="envelope-box">
-    <img src="envelope.png" alt="">
+    <img src="envelope.png" alt="envelope">
     <button id="openBtn">OPEN</button>
   </div>
 </div>
 
-<div id="step3" class="layer">
-  <div class="parchment clara">
-    <div id="typewriter1" class="text-box"></div>
-    <div id="btns-texto1" class="btn-container" style="display:none;">
-      <button class="btn-ui" id="soPraElaBtn">SÓ PARA VOCÊ</button>
-      <button class="btn-ui" id="continueBtn">CONTINUE ❤️</button>
+<!-- TELA 4: CARTA CLARA -->
+<div id="screen4" class="screen">
+  <div class="parchment">
+    <div id="texto-carta" class="text-box"></div>
+    <div style="display: flex; justify-content: center; gap: 15px; margin-top: 20px;">
+      <button class="btn-small" id="secretoBtn">🔒 Só pra ela</button>
+      <button class="btn-small" id="continuarBtn">Continuar</button>
     </div>
   </div>
 </div>
 
-<div id="step5" class="layer">
-  <div class="parchment preta">
-    <div id="typewriter2" class="text-box"></div>
-    <button class="btn-ui" id="voltarBtn">VOLTAR</button>
+<!-- TELA 5: CARTA ESCURA (TEXTO SECRETO) -->
+<div id="screen5" class="screen">
+  <div class="parchment dark">
+    <div id="texto-secreto" class="text-box"></div>
+    <button class="btn-small" id="voltarBtn" style="margin-top: 20px;">Voltar</button>
   </div>
 </div>
 
-<div id="step6" class="layer">
+<!-- TELA 6: ROSA FINAL -->
+<div id="screen6" class="screen">
   <div class="rosa-final">🌹</div>
-  <h1 style="color:var(--pink)">TE AMO</h1>
-  <h2 style="color:var(--gold)">FELIZ DIA DAS MULHERES</h2>
+  <h1>TE AMO</h1>
+  <h2>FELIZ DIA DAS MULHERES</h2>
 </div>
 
-<div id="password-screen">
-  <h2 style="color:var(--gold)">DIGITE A SENHA</h2>
-  <input type="password" id="senhaInput" placeholder="senha">
-  <button class="btn-ui" id="confirmarSenha">ENTRAR</button>
+<!-- TELA DE SENHA -->
+<div id="senha-screen">
+  <h2 style="color: var(--gold); margin-bottom: 20px;">SÓ PRA ELA</h2>
+  <input type="password" id="senhaInput" placeholder="Digite a senha">
+  <button class="btn-small" id="confirmarSenha">ENTRAR</button>
+  <button class="btn-small" id="cancelarSenha" style="background: #333;">Cancelar</button>
 </div>
+
+<!-- BOTÃO REDONDO PARA AVANÇAR -->
+<button class="btn-circle" id="nextBtn">→</button>
 
 <script>
-const canvas = document.getElementById('mainCanvas');
-const ctx = canvas.getContext('2d');
-let stage = 0;
-let particles = [];
-let animationId;
-
-// SEUS TEXTOS (COMPLETOS, NÃO MEXI)
-const texto1 = `Meu amor,
+// ===========================================
+// CONFIGURAÇÕES
+// ===========================================
+const TEXTO_PRINCIPAL = `Meu amor,
 
 Eu fiz isso só para você.
 
@@ -225,7 +336,7 @@ Não sou ninguém para falar isso, mas eu tenho muito orgulho de você, te conhe
 
 Continue sendo essa garota risonha, porque é maravilhoso escutar sua risada, eu realmente amo cada coisinha em você kkkkk, não desista e nunca pare de correr atrás de suas coisas, dificuldades e momentos ruins acontecem, tenho certeza que isso logo acabará e você vai viver feliz.`;
 
-const texto2 = `Agora vou abrir um pouco meu coração..
+const TEXTO_SECRETO = `Agora vou abrir um pouco meu coração..
 
 Minha princesa, eu sei que estamos longe um do outro, e isso às vezes aperta o peito. Mas saiba que cada segundo longe de você é um segundo pensando em você.
 
@@ -237,251 +348,226 @@ Você é meu sonho, minha realidade, meu futuro.
 
 Com amor, pra sempre seu. ❤️`;
 
+const SENHA = "0312"; // MUDE AQUI PARA A SENHA DE VOCÊS
+
 // ===========================================
-// CANVAS - CORAÇÃO BONITO (MELHORADO)
-// ===========================================
-function initCanvas() {
+// CANVAS E PÉTALAS (LEVES)
+// =========================================
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let stage = 1; // 1 = coração, 2 = foto, 3 = envelope, 4 = carta, 5 = secreta, 6 = final
+let petalas = [];
+let musica = new Audio();
+musica.loop = true;
+musica.src = 'Lana-Del-Rey.mp3';
+
+// Ajusta canvas
+function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-function drawHeart(scale, color, time) {
+// Criar pétalas (só 30, leves)
+function criarPetalas() {
+  for (let i = 0; i < 30; i++) {
+    petalas.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      tamanho: 10 + Math.random() * 15,
+      velocidade: 1 + Math.random() * 2,
+      rotacao: Math.random() * Math.PI * 2,
+      cor: `rgba(255, 80, 120, ${0.3 + Math.random() * 0.3})`
+    });
+  }
+}
+criarPetalas();
+
+// Desenhar pétalas (bem leves)
+function desenharPetalas() {
+  petalas.forEach(p => {
+    p.y += p.velocidade * 0.5; // Mais lento
+    p.rotacao += 0.01;
+    
+    if (p.y > canvas.height + 50) {
+      p.y = -50;
+      p.x = Math.random() * canvas.width;
+    }
+    
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotacao);
+    ctx.fillStyle = p.cor;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#ff69b4';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, p.tamanho/2, p.tamanho/4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
+
+// Desenhar coração bonito
+function desenharCoracao(tempo) {
   ctx.save();
   ctx.translate(canvas.width/2, canvas.height/2);
-  ctx.rotate(Math.sin(time * 0.5) * 0.05); // pulsação suave
-  ctx.beginPath();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 3;
-  ctx.shadowBlur = 30;
-  ctx.shadowColor = color;
+  ctx.rotate(Math.sin(tempo * 0.5) * 0.05);
   
-  // Coração mais bonito, com mais pontos
-  for(let i = 0; i <= Math.PI * 2; i += 0.03) {
+  // Linha principal
+  ctx.beginPath();
+  ctx.strokeStyle = '#ff69b4';
+  ctx.lineWidth = 4;
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = '#ff1493';
+  
+  for (let i = 0; i <= Math.PI * 2; i += 0.05) {
     const x = 16 * Math.pow(Math.sin(i), 3);
     const y = -(13 * Math.cos(i) - 5 * Math.cos(2*i) - 2 * Math.cos(3*i) - Math.cos(4*i));
     
-    if (i === 0) {
-      ctx.moveTo(x * scale, y * scale);
-    } else {
-      ctx.lineTo(x * scale, y * scale);
-    }
+    if (i === 0) ctx.moveTo(x * 18, y * 18);
+    else ctx.lineTo(x * 18, y * 18);
   }
   ctx.stroke();
   
-  // Pontinhos de luz ao redor (efeito partícula)
-  for (let j = 0; j < 30; j++) {
-    const angle = (j / 30) * Math.PI * 2;
-    const x = 16 * Math.pow(Math.sin(angle), 3) * scale;
-    const y = -(13 * Math.cos(angle) - 5 * Math.cos(2*angle) - 2 * Math.cos(3*angle) - Math.cos(4*angle)) * scale;
+  // Pontinhos
+  for (let j = 0; j < 20; j++) {
+    const angle = (j / 20) * Math.PI * 2;
+    const x = 16 * Math.pow(Math.sin(angle), 3) * 18;
+    const y = -(13 * Math.cos(angle) - 5 * Math.cos(2*angle) - 2 * Math.cos(3*angle) - Math.cos(4*angle)) * 18;
     
     ctx.beginPath();
-    ctx.arc(x, y, 2 + Math.sin(time + j) * 1, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.shadowBlur = 15;
+    ctx.arc(x, y, 3 + Math.sin(tempo + j) * 1, 0, Math.PI * 2);
+    ctx.fillStyle = '#ff69b4';
     ctx.fill();
   }
   
   ctx.restore();
 }
 
-function drawPetals() {
-  if (stage >= 2 && Math.random() > 0.7) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: -20,
-      size: 5 + Math.random() * 10,
-      speed: 1 + Math.random() * 3,
-      rotation: Math.random() * Math.PI * 2
-    });
+// Animação
+function animar() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  const tempo = Date.now() * 0.002;
+  
+  // Só desenha coração se estiver no stage 1
+  if (stage === 1) {
+    desenharCoracao(tempo);
   }
   
-  particles.forEach((p, i) => {
-    p.y += p.speed;
-    p.rotation += 0.02;
-    
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rotation);
-    ctx.fillStyle = "#ff3366";
-    ctx.shadowBlur = 15;
-    ctx.shadowColor = "#ff69b4";
-    ctx.beginPath();
-    ctx.ellipse(0, 0, p.size/2, p.size/4, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-    
-    if (p.y > canvas.height + 50) {
-      particles.splice(i, 1);
-    }
-  });
+  // Pétalas começam a cair a partir do stage 3
+  if (stage >= 3) {
+    desenharPetalas();
+  }
+  
+  requestAnimationFrame(animar);
 }
-
-function animate() {
-  ctx.fillStyle = "rgba(0,0,0,0.1)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  const time = Date.now() * 0.002;
-  
-  // Coração no início
-  if (stage === 0) {
-    drawHeart(12 + Math.sin(time) * 2, "#ff69b4", time);
-  }
-  
-  // Coração no final (mais intenso)
-  if (stage >= 6) {
-    drawHeart(20, "#ff3366", time);
-  }
-  
-  drawPetals();
-  
-  animationId = requestAnimationFrame(animate);
-}
+animar();
 
 // ===========================================
-// NAVEGAÇÃO CORRIGIDA (CLIQUE FUNCIONA)
+// CONTROLE DE TELAS
 // ===========================================
-function avancarStage() {
-  // Remove todas as layers ativas
-  document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+function mostrarTela(numero) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen${numero}`).classList.add('active');
+  stage = numero;
   
-  switch(stage) {
-    case 0:
-      document.getElementById('step1').classList.add('active');
-      break;
-    case 1:
-      document.getElementById('step2').classList.add('active');
-      setTimeout(() => {
-        document.getElementById('envelope-box').style.transform = "translateY(0)";
-      }, 100);
-      break;
-    case 2:
-      // Não avança automaticamente, espera o botão OPEN
-      document.getElementById('step2').classList.add('active');
-      stage--; // mantém no stage 2
-      break;
-    case 3:
-      document.getElementById('step3').classList.add('active');
-      break;
-    case 4:
-      document.getElementById('step5').classList.add('active');
-      typeWrite('typewriter2', texto2);
-      break;
-    case 5:
-      document.getElementById('step6').classList.add('active');
-      break;
+  // Esconde botão nas telas 4, 5, 6
+  const btn = document.getElementById('nextBtn');
+  if (numero >= 4) {
+    btn.classList.add('hidden');
+  } else {
+    btn.classList.remove('hidden');
+  }
+  
+  // Se for tela 3, anima envelope
+  if (numero === 3) {
+    setTimeout(() => {
+      document.getElementById('envelope-box').style.transform = 'translateY(0)';
+    }, 100);
   }
 }
 
-// Função de digitação
-function typeWrite(id, text, callback) {
-  let i = 0;
-  const el = document.getElementById(id);
-  el.innerHTML = "";
+// Botão próximo
+document.getElementById('nextBtn').addEventListener('click', function(e) {
+  e.stopPropagation();
   
-  function digitar() {
-    if (i < text.length) {
-      el.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(digitar, 30);
-    } else if (callback) {
-      callback();
-    }
-  }
-  digitar();
-}
-
-// ===========================================
-// EVENTOS
-// ===========================================
-document.body.addEventListener('click', function globalClick(e) {
-  // Se clicou em botão, não avança estágio
-  if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-    return;
+  // Toca música no primeiro avanço
+  if (stage === 1) {
+    musica.play().catch(() => {});
   }
   
-  // Toca música no primeiro clique
-  if (stage === 0) {
-    document.getElementById('musica').play().catch(() => {});
-  }
-  
-  // Avança estágio (lógica corrigida)
-  if (stage === 0) {
-    stage = 1;
-    avancarStage();
-  } 
-  else if (stage === 1) {
-    stage = 2;
-    avancarStage();
-  }
-  // Nos outros estágios, só avança se não houver botões visíveis
-  else if (stage === 3 && document.getElementById('btns-texto1').style.display === 'none') {
-    stage = 4;
-    avancarStage();
-  }
-  else if (stage === 4) {
-    stage = 5;
-    avancarStage();
+  if (stage === 1) {
+    mostrarTela(2);
+  } else if (stage === 2) {
+    mostrarTela(3);
+  } else if (stage === 3) {
+    // Vai para carta, mas precisa do OPEN
   }
 });
 
 // Botão OPEN
-document.getElementById('openBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  stage = 3;
-  avancarStage();
-  typeWrite('typewriter1', texto1, () => {
-    document.getElementById('btns-texto1').style.display = 'flex';
-  });
+document.getElementById('openBtn').addEventListener('click', function() {
+  mostrarTela(4);
+  
+  // Digita texto
+  const textoEl = document.getElementById('texto-carta');
+  textoEl.innerHTML = '';
+  let i = 0;
+  function digitar() {
+    if (i < TEXTO_PRINCIPAL.length) {
+      textoEl.innerHTML += TEXTO_PRINCIPAL[i];
+      i++;
+      setTimeout(digitar, 30);
+    }
+  }
+  digitar();
 });
 
-// Botão SÓ PARA VOCÊ
-document.getElementById('soPraElaBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  document.getElementById('password-screen').classList.add('active');
+// Botão secreto
+document.getElementById('secretoBtn').addEventListener('click', function() {
+  document.getElementById('senha-screen').classList.add('active');
 });
 
-// Botão CONTINUE
-document.getElementById('continueBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  stage = 4;
-  avancarStage();
-});
-
-// Botão VOLTAR
-document.getElementById('voltarBtn').addEventListener('click', function(e) {
-  e.stopPropagation();
-  stage = 3;
-  avancarStage();
-});
-
-// Sistema de senha
+// Confirmar senha
 document.getElementById('confirmarSenha').addEventListener('click', function() {
-  const senha = document.getElementById('senhaInput').value;
-  // Coloque AQUI a senha que vocês combinarem
-  if (senha === "0312") { // EXEMPLO - MUDE PARA A DATA DE VOCÊS
-    document.getElementById('password-screen').classList.remove('active');
-    stage = 5;
-    avancarStage();
+  const input = document.getElementById('senhaInput');
+  if (input.value === SENHA) {
+    document.getElementById('senha-screen').classList.remove('active');
+    mostrarTela(5);
+    
+    // Mostra texto secreto
+    document.getElementById('texto-secreto').innerHTML = TEXTO_SECRETO;
   } else {
-    alert("Senha errada!");
+    alert('Senha errada!');
   }
 });
 
-// Fechar tela de senha clicando fora
-document.getElementById('password-screen').addEventListener('click', function(e) {
+// Cancelar senha
+document.getElementById('cancelarSenha').addEventListener('click', function() {
+  document.getElementById('senha-screen').classList.remove('active');
+});
+
+// Voltar da tela secreta
+document.getElementById('voltarBtn').addEventListener('click', function() {
+  mostrarTela(4);
+});
+
+// Continuar para o final
+document.getElementById('continuarBtn').addEventListener('click', function() {
+  mostrarTela(6);
+});
+
+// Fechar senha clicando fora
+document.getElementById('senha-screen').addEventListener('click', function(e) {
   if (e.target === this) {
     this.classList.remove('active');
   }
 });
 
-// Inicialização
-window.addEventListener('resize', initCanvas);
-initCanvas();
-animate();
-
-// Primeira instrução
-stage = 0;
-document.getElementById('step1').classList.add('active');
+// Inicia
+mostrarTela(1);
 </script>
 </body>
 </html>
